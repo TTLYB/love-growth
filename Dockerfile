@@ -2,11 +2,13 @@ FROM node:24
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
-
+# 先复制所有文件
 COPY . .
 
+# 安装依赖（此时不会有 postinstall 干扰）
+RUN npm install
+
+# 生成 Prisma Client
 RUN npx prisma generate
 
 EXPOSE 3000
