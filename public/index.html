@@ -3,562 +3,1182 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>成长轨迹 · 我们的小站</title>
+    <title>成长空间 · 双人宇宙</title>
+
     <style>
-        /* 你的完整 CSS 保持原样，这里为了简洁省略，请把你自己的 CSS 粘贴到这里 */
-        /* 务必保留你之前所有样式代码，否则页面会乱 */
+        :root {
+            --bg1: #07110b;
+            --bg2: #0f1f15;
+            --bg3: #0a1710;
+            --card: rgba(255,255,255,.07);
+            --card-strong: rgba(255,255,255,.10);
+            --line: rgba(255,255,255,.10);
+            --text: #f3fff6;
+            --muted: #9db4a4;
+            --primary: #8ff5b3;
+            --primary2: #5ad5ff;
+            --accent: #ffd36b;
+            --danger: #ff8181;
+            --shadow: 0 20px 60px rgba(0,0,0,.42);
+            --radius: 28px;
+            --radius-sm: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at top left, rgba(143,245,179,.15), transparent 28%), radial-gradient(circle at bottom right, rgba(90,213,255,.12), transparent 30%), linear-gradient(160deg,var(--bg1),var(--bg2) 55%,var(--bg3));
+            overflow-x: hidden;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .20;
+            z-index: -1;
+            animation: float 13s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .orb1 {
+            width: 520px;
+            height: 520px;
+            background: #62ffae;
+            top: -180px;
+            left: -140px;
+        }
+
+        .orb2 {
+            width: 500px;
+            height: 500px;
+            background: #59d6ff;
+            right: -180px;
+            bottom: -180px;
+            animation-delay: -4s;
+        }
+
+        .orb3 {
+            width: 360px;
+            height: 360px;
+            background: #ffd36b;
+            top: 20%;
+            right: 20%;
+            opacity: .08;
+            animation-delay: -7s;
+        }
+
+        @keyframes float {
+            0%,100% {
+                transform: translateY(0) translateX(0) scale(1)
+            }
+
+            50% {
+                transform: translateY(26px) translateX(12px) scale(1.08)
+            }
+        }
+
+        .shell {
+            width: min(1200px, calc(100vw - 28px));
+            margin: 0 auto;
+            padding: 24px 0 36px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 52px;
+            height: 52px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(143,245,179,.22), rgba(90,213,255,.18));
+            border: 1px solid var(--line);
+            display: grid;
+            place-items: center;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+            font-size: 1.35rem;
+        }
+
+        .brand h1 {
+            font-size: 1.2rem;
+            line-height: 1.1;
+            letter-spacing: .02em;
+        }
+
+        .brand p {
+            color: var(--muted);
+            font-size: .92rem;
+            margin-top: 3px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            border: none;
+            cursor: pointer;
+            border-radius: 999px;
+            padding: 12px 16px;
+            font-weight: 700;
+            transition: .22s ease;
+            color: var(--text);
+            background: rgba(255,255,255,.06);
+            border: 1px solid var(--line);
+            backdrop-filter: blur(12px);
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                border-color: rgba(143,245,179,.28)
+            }
+
+        .btn-primary {
+            color: #04140b;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            border: none;
+            box-shadow: 0 14px 36px rgba(143,245,179,.18);
+        }
+
+        .btn-danger {
+            background: rgba(255,129,129,.11);
+            border: 1px solid rgba(255,129,129,.16);
+            color: #ffd2d2;
+        }
+
+        .btn-sm {
+            padding: 10px 14px;
+            font-size: .92rem
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 18px;
+            margin: 10px 0 18px;
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .hero-copy {
+            padding: 30px;
+            position: relative;
+        }
+
+            .hero-copy::after {
+                content: "";
+                position: absolute;
+                width: 220px;
+                height: 220px;
+                right: -60px;
+                top: -60px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(143,245,179,.16), transparent 70%);
+                pointer-events: none;
+            }
+
+        .eyebrow {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(143,245,179,.10);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: .9rem;
+            margin-bottom: 14px;
+        }
+
+        .hero-copy h2 {
+            font-size: clamp(2rem, 4vw, 3.8rem);
+            line-height: 1.05;
+            letter-spacing: -.04em;
+            margin-bottom: 14px;
+        }
+
+        .hero-copy p {
+            color: var(--muted);
+            line-height: 1.9;
+            font-size: 1rem;
+            max-width: 64ch;
+        }
+
+        .hero-foot {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .hero-side {
+            padding: 20px;
+            display: grid;
+            gap: 12px;
+            align-content: start;
+        }
+
+        .mini {
+            background: rgba(255,255,255,.05);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 16px;
+        }
+
+            .mini label {
+                display: block;
+                color: var(--muted);
+                font-size: .88rem;
+                margin-bottom: 6px;
+            }
+
+            .mini strong {
+                font-size: 1.35rem;
+                letter-spacing: .01em;
+            }
+
+            .mini span {
+                display: block;
+                margin-top: 6px;
+                color: var(--muted);
+                font-size: .92rem;
+                line-height: 1.6;
+            }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.08fr .92fr;
+            gap: 18px;
+        }
+
+        .section {
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+            .section-head h3 {
+                font-size: 1.25rem;
+                margin-bottom: 6px;
+            }
+
+            .section-head p {
+                color: var(--muted);
+                line-height: 1.7;
+            }
+
+        .progress-panel {
+            padding: 22px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .ring-wrap {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .ring {
+            width: 172px;
+            height: 172px;
+            border-radius: 50%;
+            background: conic-gradient( from 180deg, var(--primary) 0%, var(--primary2) calc(var(--progress) * 1%), rgba(255,255,255,.08) 0 );
+            padding: 14px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+        }
+
+        .ring-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(8,16,11,.72);
+            border: 1px solid rgba(255,255,255,.08);
+            display: grid;
+            place-items: center;
+            text-align: center;
+        }
+
+            .ring-inner strong {
+                font-size: 2rem;
+                line-height: 1;
+            }
+
+            .ring-inner span {
+                margin-top: 6px;
+                color: var(--muted);
+                font-size: .88rem;
+            }
+
+        .progress-info {
+            flex: 1;
+            min-width: 220px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .bar {
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.06);
+        }
+
+            .bar > i {
+                display: block;
+                height: 100%;
+                width: 0;
+                border-radius: inherit;
+                background: linear-gradient(90deg,var(--primary),var(--primary2));
+                transition: width .45s ease;
+            }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 10px;
+        }
+
+        .stat {
+            padding: 14px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.05);
+            border: 1px solid var(--line);
+        }
+
+            .stat b {
+                display: block;
+                font-size: 1.25rem;
+                margin-bottom: 4px
+            }
+
+            .stat small {
+                color: var(--muted);
+                line-height: 1.4
+            }
+
+        .composer {
+            padding: 22px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .input {
+            width: 100%;
+            height: 58px;
+            border: none;
+            outline: none;
+            border-radius: 18px;
+            padding: 0 18px;
+            font-size: 16px;
+            color: var(--text);
+            background: rgba(255,255,255,.06);
+            border: 1px solid var(--line);
+            transition: .2s ease;
+        }
+
+            .input:focus {
+                border-color: rgba(143,245,179,.35);
+                box-shadow: 0 0 0 4px rgba(143,245,179,.07);
+            }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .chip {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid var(--line);
+            color: var(--muted);
+            cursor: pointer;
+            transition: .2s ease;
+            user-select: none;
+        }
+
+            .chip:hover {
+                color: var(--text);
+                border-color: rgba(143,245,179,.25);
+                transform: translateY(-2px);
+            }
+
+        .task-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .task {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 16px;
+            border-radius: 22px;
+            background: rgba(255,255,255,.05);
+            border: 1px solid var(--line);
+            position: relative;
+            overflow: hidden;
+            transition: .22s ease;
+            animation: pop .28s ease both;
+        }
+
+            .task:hover {
+                transform: translateY(-2px);
+                border-color: rgba(143,245,179,.22);
+            }
+
+            .task::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(120deg, transparent, rgba(255,255,255,.08), transparent);
+                transform: translateX(-100%);
+                transition: 1s ease;
+            }
+
+            .task:hover::after {
+                transform: translateX(100%)
+            }
+
+        .task-left {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .check {
+            width: 22px;
+            height: 22px;
+            margin-top: 3px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            flex: 0 0 auto;
+        }
+
+        .task-text {
+            min-width: 0;
+        }
+
+        .task-title {
+            font-size: 1.02rem;
+            line-height: 1.65;
+            word-break: break-word;
+        }
+
+        .task-meta {
+            color: var(--muted);
+            font-size: .86rem;
+            margin-top: 6px;
+        }
+
+        .done .task-title {
+            text-decoration: line-through;
+            opacity: .45;
+        }
+
+        .task-actions {
+            display: flex;
+            flex-shrink: 0;
+            gap: 10px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 44px 20px;
+            border-radius: 24px;
+            border: 1px dashed rgba(255,255,255,.12);
+            background: rgba(255,255,255,.03);
+        }
+
+            .empty h4 {
+                font-size: 1.2rem;
+                margin-bottom: 8px;
+            }
+
+            .empty p {
+                color: var(--muted);
+                line-height: 1.8;
+            }
+
+        .foot {
+            margin: 18px 0 8px;
+            text-align: center;
+            color: var(--muted);
+            line-height: 1.9;
+            font-size: .96rem;
+        }
+
+        /* ===== 入场层 ===== */
+        .gate {
+            position: fixed;
+            inset: 0;
+            background: rgba(5,10,7,.60);
+            backdrop-filter: blur(18px);
+            display: grid;
+            place-items: center;
+            z-index: 999;
+            padding: 18px;
+        }
+
+        .gate-card {
+            width: min(92vw, 440px);
+            padding: 28px;
+            border-radius: 30px;
+            background: rgba(10,16,11,.84);
+            border: 1px solid rgba(255,255,255,.10);
+            box-shadow: var(--shadow);
+            animation: gateIn .65s cubic-bezier(.2,.8,.2,1);
+        }
+
+        @keyframes gateIn {
+            from {
+                opacity: 0;
+                transform: translateY(24px) scale(.96)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+        }
+
+        .gate-badge {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(143,245,179,.10);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: .88rem;
+            margin-bottom: 16px;
+        }
+
+        .gate-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .gate-card p {
+            color: var(--muted);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .gate-form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .gate-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .status-dot {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #7adf93;
+            box-shadow: 0 0 0 6px rgba(122,223,147,.12);
+        }
+
+            .dot.off {
+                background: #ff7f7f;
+                box-shadow: 0 0 0 6px rgba(255,127,127,.12)
+            }
+
+        .small-muted {
+            color: var(--muted);
+            font-size: .92rem
+        }
+
+        @keyframes pop {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(.98)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+        }
+
+        @media (max-width: 980px) {
+            .hero, .grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @media (max-width: 700px) {
+            .shell {
+                width: min(100vw - 18px, 1200px)
+            }
+
+            .hero-copy, .composer, .progress-panel, .section {
+                padding: 18px
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column
+            }
+
+            .actions {
+                justify-content: flex-start
+            }
+
+            .input-row {
+                grid-template-columns: 1fr
+            }
+
+            .stats {
+                grid-template-columns: 1fr
+            }
+
+            .ring {
+                width: 156px;
+                height: 156px
+            }
+
+            .task {
+                flex-direction: column
+            }
+
+            .task-actions {
+                width: 100%
+            }
+
+                .task-actions .btn {
+                    width: 100%
+                }
+        }
     </style>
 </head>
-<!-- 注意：这里不再放任何 script，统一放在 body 底部 -->
+
 <body>
-    <div class="enter-mask" id="enterMask">
-        <div class="enter-card">
-            <div class="enter-badge">🌱 成长计划 · 共用空间</div>
-            <h1>我们的小站</h1>
-            <p>记录日常、日记、心情、共同目标与回忆。<br>把生活变成可回看的轨迹。</p>
-            <button class="btn btn-primary" id="enterBtn">进入网站</button>
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+    <div class="bg-orb orb3"></div>
+
+    <div class="gate" id="gate">
+        <div class="gate-card">
+            <div class="gate-badge">🌱 双人共用空间</div>
+            <h2>进入你们的小站</h2>
+            <p>输入同一个房间码，就能进入同一个空间。<br>名字会显示在你们的记录里。</p>
+
+            <form class="gate-form" id="gateForm">
+                <input class="input" id="roomCodeInput" placeholder="房间码，例如 love-room" />
+                <input class="input" id="displayNameInput" placeholder="你的名字，例如 我 / 她 / 他" />
+                <div class="gate-actions">
+                    <button class="btn btn-primary" type="submit">进入</button>
+                    <button class="btn" type="button" id="randomRoomBtn">生成房间码</button>
+                </div>
+                <div class="small-muted">后续会记住你上次输入的房间码和名字。</div>
+            </form>
         </div>
     </div>
 
-    <button class="btn btn-ghost theme-toggle btn-sm" id="themeBtn">🌙 夜间模式</button>
-
-    <header class="hero">
-        <div class="wrap hero-grid">
-            <div class="hero-copy fade-in">
-                <div class="eyebrow">📌 Daily Growth Space</div>
-                <h1>把每天的生活<br>都认真存起来</h1>
-                <p>
-                    这是一个适合两个人一起用的成长网站：可以打卡、写日记、记心情、存回忆、做共同清单，
-                    也可以导出备份，慢慢把它变成属于你们自己的时间胶囊。
-                </p>
-                <div class="hero-actions">
-                    <a class="btn btn-primary btn-sm" href="#dashboard">查看今日看板</a>
-                    <a class="btn btn-ghost btn-sm" href="#diary">写一篇日记</a>
-                    <a class="btn btn-ghost btn-sm" href="#couple">共同目标</a>
+    <div class="shell">
+        <div class="topbar">
+            <div class="brand">
+                <div class="logo">✦</div>
+                <div>
+                    <h1>成长空间</h1>
+                    <p>双人共用 · 实时同步 · 记录生活</p>
                 </div>
             </div>
 
-            <div class="hero-panel fade-in">
-                <div class="mini-stat"><span>今日完成</span><strong id="heroProgress">0%</strong></div>
-                <div class="mini-stat"><span>连续记录</span><strong><em id="streakNum">0</em> 天</strong></div>
-                <div class="mini-stat"><span>日记数量</span><strong id="diaryNum">0</strong></div>
-                <div class="mini-stat"><span>回忆数量</span><strong id="memoryNum">0</strong></div>
+            <div class="actions">
+                <button class="btn" id="themeBtn">🌙 夜间模式</button>
+                <button class="btn" id="copyRoomBtn">复制房间码</button>
             </div>
         </div>
-    </header>
 
-    <nav>
-        <a href="#dashboard" class="active">🏠 看板</a>
-        <a href="#diary">📝 日记</a>
-        <a href="#memory">📷 回忆</a>
-        <a href="#couple">💞 共用</a>
-        <a href="#library">📚 书单</a>
-        <a href="#backup">💾 备份</a>
-    </nav>
+        <section class="hero">
+            <div class="panel hero-copy">
+                <div class="eyebrow">✨ Every day deserves art</div>
+                <h2>把普通日子，<br>做成值得反复回看的作品。</h2>
+                <p>
+                    这里不是单纯的待办清单，而是你们一起生活的可视化空间。
+                    任务、陪伴、进度、共同目标都能在这里被认真收藏。
+                </p>
+                <div class="hero-foot">
+                    <button class="btn btn-primary" id="scrollToTasks">开始记录</button>
+                    <button class="btn" id="quickAddBtn">一键加入今日重点</button>
+                </div>
+            </div>
 
-    <main>
-        <!-- 你所有的 section 保持不变，这里省略 -->
-    </main>
+            <div class="panel hero-side">
+                <div class="mini">
+                    <label>当前房间</label>
+                    <strong id="roomLabel">未进入</strong>
+                    <span id="nameLabel">请先输入房间码与名字</span>
+                </div>
+                <div class="mini">
+                    <label>连接状态</label>
+                    <strong class="status-dot">
+                        <i class="dot off" id="statusDot"></i>
+                        <span id="statusText">未连接</span>
+                    </strong>
+                    <span>两个设备在同一房间时，会实时看到彼此的更新。</span>
+                </div>
+                <div class="mini">
+                    <label>今日提示</label>
+                    <strong id="tipTitle">先完成最重要的一件事</strong>
+                    <span id="tipText">把目标变小，事情就会变得更容易开始。</span>
+                </div>
+            </div>
+        </section>
 
-    <footer class="footer fade-in">
-        <div id="footerQuote">每一天都算数。</div>
-        <div style="margin-top:6px;">© 成长轨迹 · 记录生活，也记录彼此</div>
-    </footer>
+        <div class="grid">
+            <section class="panel progress-panel">
+                <div class="section-head">
+                    <div>
+                        <h3>今日进度</h3>
+                        <p>一个清晰的完成度，会让你们更有节奏感。</p>
+                    </div>
+                </div>
 
-    <!-- 1. 引入 Socket.IO 客户端 -->
+                <div class="ring-wrap">
+                    <div class="ring" id="progressRing" style="--progress:0">
+                        <div class="ring-inner">
+                            <div>
+                                <strong id="progressText">0%</strong>
+                                <span>完成率</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-info">
+                        <div class="bar"><i id="progressBar"></i></div>
+                        <div class="stats">
+                            <div class="stat">
+                                <b id="totalCount">0</b>
+                                <small>总任务</small>
+                            </div>
+                            <div class="stat">
+                                <b id="doneCount">0</b>
+                                <small>已完成</small>
+                            </div>
+                            <div class="stat">
+                                <b id="leftCount">0</b>
+                                <small>未完成</small>
+                            </div>
+                        </div>
+                        <div class="small-muted" id="statusHint">今天的节奏还不错，继续推进一点。</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel composer" id="taskSection">
+                <div class="section-head">
+                    <div>
+                        <h3>任务清单</h3>
+                        <p>把今天要做的事记下来，互相看见，也互相提醒。</p>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <input id="taskInput" class="input" placeholder="输入一条任务，例如：阅读30分钟 / 运动20分钟" />
+                    <button id="addBtn" class="btn btn-primary">添加任务</button>
+                </div>
+
+                <div class="chips">
+                    <div class="chip" data-text="阅读 30 分钟">📚 阅读</div>
+                    <div class="chip" data-text="运动 20 分钟">🏃 运动</div>
+                    <div class="chip" data-text="写今日总结">📝 总结</div>
+                    <div class="chip" data-text="给对方发一句鼓励">💌 鼓励</div>
+                    <div class="chip" data-text="早点睡觉">🌙 休息</div>
+                </div>
+
+                <div id="taskList" class="task-list"></div>
+            </section>
+        </div>
+
+        <div class="foot">
+            <div id="footerQuote">把每一天都认真存起来。</div>
+            <div>两个人一起走，路会更亮。</div>
+        </div>
+    </div>
+
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-
-    <!-- 2. 唯一的主脚本 -->
     <script>
-        // ========= Socket 连接 =========
-        const socket = io("love-growth-production.up.railway.app");
-        const roomCode ="SG6P4S";   // ⚠️ 改成你 curl 获得的真实 roomCode
-        socket.emit("joinRoom", roomCode);
-
-        // ========= 本地存储相关 =========
-        const STORAGE_KEY = "growth_space_v2";
-        const DEFAULT_ANNIV = "";
-        const QUOTES = [
-            "今天做一点，明天就会轻松一点。",
-            "关系会更稳，靠的是持续的认真。",
-            "把生活记下来，记忆就不会轻易散掉。",
-            "微小的坚持，最后都会变成答案。",
-            "不用一下子变好，先不停下来就行。",
-            "认真过每一天，时间会给你回礼。"
-        ];
-
-        const DEFAULT_STATE = {
-            theme: "light",
-            tasks: [],                         // 由后端加载
-            diaries: [
-                { id: uid(), title: "今天开始记录", mood: "🙂 平静", content: "从今天起，把我们的生活慢慢存下来。", date: todayISO(), createdAt: now() }
-            ],
-            memories: [],
-            goals: [
-                { id: uid(), text: "一起坚持一件长期的小事", done: false, createdAt: now() }
-            ],
-            notes: [
-                { id: uid(), text: "今天也要记得好好吃饭。", createdAt: now() }
-            ],
-            anniversary: DEFAULT_ANNIV,
-            editingDiaryId: null
+        const STORAGE_KEYS = {
+            roomCode: "cg_room_code",
+            name: "cg_display_name",
+            theme: "cg_theme"
         };
 
-        function now() { return new Date().toISOString(); }
-        function todayISO() {
-            const d = new Date();
-            const m = String(d.getMonth() + 1).padStart(2, "0");
-            const day = String(d.getDate()).padStart(2, "0");
-            return `${d.getFullYear()}-${m}-${day}`;
-        }
-        function uid() {
-            return "id_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-        }
-        function loadState() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (!raw) return structuredClone(DEFAULT_STATE);
-                const parsed = JSON.parse(raw);
-                return { ...structuredClone(DEFAULT_STATE), ...parsed };
-            } catch (e) {
-                return structuredClone(DEFAULT_STATE);
-            }
-        }
-        function saveState() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            syncStats();
-        }
-        let state = loadState();
+        let socket = null;
+        let currentRoomCode = localStorage.getItem(STORAGE_KEYS.roomCode) || "";
+        let displayName = localStorage.getItem(STORAGE_KEYS.name) || "";
+        let tasks = [];
+        let joined = false;
 
         const $ = (sel) => document.querySelector(sel);
-        const escapeHTML = (str = "") => str
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#39;");
 
-        function formatDateTime(iso) {
-            const d = new Date(iso);
-            return d.toLocaleString("zh-CN", {
-                year: "numeric", month: "2-digit", day: "2-digit",
-                hour: "2-digit", minute: "2-digit"
-            });
-        }
-        function formatDate(iso) {
-            const d = new Date(iso + "T00:00:00");
-            return d.toLocaleDateString("zh-CN", {
-                year: "numeric", month: "long", day: "numeric", weekday: "long"
-            });
+        const tips = [
+            ["先完成最重要的一件事", "把目标变小，事情就会变得更容易开始。"],
+            ["今天也别忘了休息", "节奏不是越快越好，而是持续地往前。"],
+            ["一起做一点点", "微小的积累会慢慢变成很大的变化。"],
+            ["把想法写下来", "记录本身就会让生活更清晰。"]
+        ];
+
+        function uid() {
+            return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
         }
 
         function setTheme(theme) {
-            state.theme = theme;
-            document.documentElement.setAttribute("data-theme", theme);
+            localStorage.setItem(STORAGE_KEYS.theme, theme);
+            document.documentElement.dataset.theme = theme;
             $("#themeBtn").textContent = theme === "dark" ? "☀️ 日间模式" : "🌙 夜间模式";
-            saveState();
         }
 
-        function renderQuote() {
-            const idx = new Date().getDate() % QUOTES.length;
-            $("#quoteBox").textContent = QUOTES[idx];
-            $("#footerQuote").textContent = QUOTES[(idx + 2) % QUOTES.length];
+        function applyTheme() {
+            const theme = localStorage.getItem(STORAGE_KEYS.theme) || "dark";
+            setTheme(theme);
         }
 
-        function calcStreak(diaries) {
-            if (!diaries.length) return 0;
-            const dates = [...new Set(diaries.map(d => d.date))].sort().reverse();
-            let streak = 0;
-            let current = new Date(todayISO() + "T00:00:00");
-            for (const dateStr of dates) {
-                const dt = new Date(dateStr + "T00:00:00");
-                if (dt.toDateString() === current.toDateString()) {
-                    streak++;
-                    current.setDate(current.getDate() - 1);
-                } else {
-                    break;
-                }
-            }
-            return streak;
+        function setStatus(online) {
+            $("#statusDot").className = online ? "dot" : "dot off";
+            $("#statusText").textContent = online ? "已连接" : "未连接";
         }
 
-        function updateDashboard() {
-            const total = state.tasks.length;
-            const done = state.tasks.filter(t => t.done).length;
+        function setRoomInfo() {
+            $("#roomLabel").textContent = currentRoomCode || "未进入";
+            $("#nameLabel").textContent = displayName ? `当前昵称：${displayName}` : "请先输入房间码与名字";
+        }
+
+        function updateTip() {
+            const item = tips[Math.floor(Math.random() * tips.length)];
+            $("#tipTitle").textContent = item[0];
+            $("#tipText").textContent = item[1];
+            $("#footerQuote").textContent = item[1];
+        }
+
+        function calcProgress(list) {
+            const total = list.length;
+            const done = list.filter(t => t.done).length;
             const left = total - done;
-            const percent = total ? Math.round(done / total * 100) : 0;
-            $("#taskTotal").textContent = total;
-            $("#taskDone").textContent = done;
-            $("#taskLeft").textContent = left;
-            $("#progressPercent").textContent = percent + "%";
-            $("#heroProgress").textContent = percent + "%";
-            const circumference = 2 * Math.PI * 68;
-            const offset = circumference - percent / 100 * circumference;
-            const circle = $("#progressCircle");
-            circle.style.strokeDasharray = circumference;
-            circle.style.strokeDashoffset = offset;
-            $("#dashboardNote").textContent =
-                percent === 100 ? "今日任务已经完成，今天很棒。" :
-                    percent >= 60 ? "已经完成大半了，继续往前一点。" :
-                        "先完成最重要的一项，就会轻松很多。";
+            const percent = total ? Math.round((done / total) * 100) : 0;
+            return { total, done, left, percent };
         }
 
-        function renderTasks() {
-            const list = $("#taskList");
-            if (!state.tasks.length) {
-                list.innerHTML = `<div class="empty">还没有任务，先添加一个今日目标。</div>`;
+        function renderStats() {
+            const { total, done, left, percent } = calcProgress(tasks);
+            $("#totalCount").textContent = total;
+            $("#doneCount").textContent = done;
+            $("#leftCount").textContent = left;
+            $("#progressText").textContent = `${percent}%`;
+            $("#progressBar").style.width = `${percent}%`;
+            $("#progressRing").style.setProperty("--progress", percent);
+
+            if (!total) {
+                $("#statusHint").textContent = "还没有任务，先添加第一条吧。";
+            } else if (percent === 100) {
+                $("#statusHint").textContent = "今天已经全部完成，适合给彼此一个小小的奖励。";
+            } else if (percent >= 60) {
+                $("#statusHint").textContent = "已经走过大半，继续稳稳推进。";
+            } else {
+                $("#statusHint").textContent = "先做一件最重要的，节奏就会起来。";
+            }
+        }
+
+        function taskNode(task) {
+            const item = document.createElement("div");
+            item.className = `task ${task.done ? "done" : ""}`;
+            item.dataset.id = task.id;
+
+            const left = document.createElement("div");
+            left.className = "task-left";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "check";
+            checkbox.checked = !!task.done;
+            checkbox.addEventListener("change", () => toggleTask(task.id));
+
+            const textWrap = document.createElement("div");
+            textWrap.className = "task-text";
+
+            const title = document.createElement("div");
+            title.className = "task-title";
+            title.textContent = task.text;
+
+            const meta = document.createElement("div");
+            meta.className = "task-meta";
+            meta.textContent = task.createdAt ? `创建于 ${new Date(task.createdAt).toLocaleString("zh-CN")}` : "刚刚创建";
+
+            textWrap.appendChild(title);
+            textWrap.appendChild(meta);
+
+            left.appendChild(checkbox);
+            left.appendChild(textWrap);
+
+            const actions = document.createElement("div");
+            actions.className = "task-actions";
+
+            const del = document.createElement("button");
+            del.className = "btn btn-danger btn-sm";
+            del.textContent = "删除";
+            del.addEventListener("click", () => deleteTask(task.id));
+
+            actions.appendChild(del);
+
+            item.appendChild(left);
+            item.appendChild(actions);
+
+            return item;
+        }
+
+        function renderTasks(list) {
+            tasks = Array.isArray(list) ? list : [];
+            const root = $("#taskList");
+            root.innerHTML = "";
+
+            if (!tasks.length) {
+                root.innerHTML = `
+            <div class="empty">
+              <h4>🌙 还没有任务</h4>
+              <p>添加第一条任务，页面就会开始“活”起来。<br>你们的成长空间从这里正式开始。</p>
+            </div>
+          `;
+                renderStats();
                 return;
             }
-            list.innerHTML = state.tasks.map(task => `
-                    <div class="item ${task.done ? "done" : ""}" data-id="${task.id}">
-                      <div class="task-left">
-                        <input class="check" type="checkbox" ${task.done ? "checked" : ""} />
-                        <div class="item-main">
-                          <div class="item-title">${escapeHTML(task.text)}</div>
-                          <div class="item-meta">
-                            <span>创建于 ${formatDateTime(task.createdAt)}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="item-actions">
-                        <button class="btn btn-ghost btn-sm edit-task">编辑</button>
-                        <button class="btn btn-danger btn-sm del-task">删除</button>
-                      </div>
-                    </div>
-                  `).join("");
 
-            list.querySelectorAll(".check").forEach(el => {
-                el.addEventListener("change", (e) => {
-                    const id = e.target.closest(".item").dataset.id;
-                    const t = state.tasks.find(x => x.id === id);
-                    if (t) { t.done = e.target.checked; saveState(); renderAll(); }
-                });
+            tasks.forEach(t => root.appendChild(taskNode(t)));
+            renderStats();
+        }
+
+        function joinRoom() {
+            if (!socket || !currentRoomCode) return;
+            socket.emit("joinRoom", currentRoomCode);
+            joined = true;
+            setRoomInfo();
+        }
+
+        function connectSocket() {
+            if (socket) socket.disconnect();
+            socket = io("http://localhost:3000", { transports: ["websocket", "polling"] });
+
+            socket.on("connect", () => {
+                setStatus(true);
+                joinRoom();
             });
-            list.querySelectorAll(".edit-task").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = e.target.closest(".item").dataset.id;
-                    const t = state.tasks.find(x => x.id === id);
-                    if (!t) return;
-                    const text = prompt("修改任务：", t.text);
-                    if (text && text.trim()) {
-                        t.text = text.trim();
-                        saveState(); renderAll();
-                    }
-                });
+
+            socket.on("disconnect", () => {
+                setStatus(false);
             });
-            list.querySelectorAll(".del-task").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = e.target.closest(".item").dataset.id;
-                    if (confirm("确定删除这条任务吗？")) {
-                        state.tasks = state.tasks.filter(x => x.id !== id);
-                        saveState(); renderAll();
-                    }
-                });
+
+            socket.on("initTasks", (list) => {
+                renderTasks(list);
             });
-        }
 
-        // ========= 以下所有渲染函数全部保留完整 =========
-        function renderTodaySummary() {
-            if (!state.diaries.length) {
-                $("#todaySummary").textContent = "还没有日记，先写第一篇吧。";
-                return;
-            }
-            const latest = [...state.diaries].sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
-            $("#todaySummary").innerHTML = `
-                    <strong>${escapeHTML(latest.title || "未命名日记")}</strong><br>
-                    <span class="chip" style="margin:8px 0;">${escapeHTML(latest.mood)}</span>
-                    <div style="height:8px"></div>
-                    ${escapeHTML(latest.content).replaceAll("\n", "<br>")}
-                  `;
-        }
-
-        function renderDiaries() {
-            const list = $("#diaryList");
-            if (!state.diaries.length) {
-                list.innerHTML = `<div class="empty">暂无日记，写下今天的心情吧。</div>`;
-                return;
-            }
-            list.innerHTML = [...state.diaries]
-                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-                .map(item => `
-                      <div class="item ${state.editingDiaryId === item.id ? "done" : ""}" data-id="${item.id}">
-                        <div class="item-main">
-                          <div class="item-title">${escapeHTML(item.title || "未命名日记")}</div>
-                          <div class="item-meta">
-                            <span class="chip">${escapeHTML(item.mood)}</span>
-                            <span>${formatDateTime(item.createdAt)}</span>
-                          </div>
-                          <div class="item-sub" style="margin-top:8px">${escapeHTML(item.content)}</div>
-                        </div>
-                        <div class="item-actions">
-                          <button class="btn btn-ghost btn-sm edit-diary">编辑</button>
-                          <button class="btn btn-danger btn-sm del-diary">删除</button>
-                        </div>
-                      </div>
-                    `).join("");
-
-            list.querySelectorAll(".edit-diary").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = e.target.closest(".item").dataset.id;
-                    const d = state.diaries.find(x => x.id === id);
-                    if (!d) return;
-                    state.editingDiaryId = id;
-                    $("#diaryFormTitle").textContent = "编辑日记";
-                    $("#diaryTitle").value = d.title;
-                    $("#diaryMood").value = d.mood;
-                    $("#diaryContent").value = d.content;
-                    $("#diarySubmitBtn").textContent = "保存修改";
-                    $("#cancelDiaryEditBtn").style.display = "inline-flex";
-                    window.location.hash = "#diary";
-                });
-            });
-            list.querySelectorAll(".del-diary").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = e.target.closest(".item").dataset.id;
-                    if (confirm("确定删除这篇日记吗？")) {
-                        state.diaries = state.diaries.filter(x => x.id !== id);
-                        if (state.editingDiaryId === id) cancelDiaryEdit();
-                        saveState(); renderAll();
-                    }
-                });
-            });
-        }
-
-        function cancelDiaryEdit() {
-            state.editingDiaryId = null;
-            $("#diaryFormTitle").textContent = "写一篇新日记";
-            $("#diaryTitle").value = "";
-            $("#diaryMood").value = "🙂 平静";
-            $("#diaryContent").value = "";
-            $("#diarySubmitBtn").textContent = "保存日记";
-            $("#cancelDiaryEditBtn").style.display = "none";
-            saveState();
-        }
-
-        function renderMemories() {
-            const list = $("#memoryList");
-            if (!state.memories.length) {
-                list.innerHTML = `<div class="empty">还没有回忆，上传或记录一个小瞬间吧。</div>`;
-                return;
-            }
-            list.innerHTML = [...state.memories]
-                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-                .map(item => `
-                      <div class="item" data-id="${item.id}">
-                        <div class="item-main">
-                          <div class="item-title">${escapeHTML(item.tag || "回忆")}</div>
-                          <div class="item-meta"><span>${formatDateTime(item.createdAt)}</span></div>
-                          <div class="item-sub" style="margin-top:8px">${escapeHTML(item.text)}</div>
-                          ${item.image ? `<div style="margin-top:10px"><img src="${escapeHTML(item.image)}" alt="回忆图片" style="width:100%;max-height:240px;object-fit:cover;border-radius:16px;border:1px solid var(--line)"></div>` : ""}
-                        </div>
-                        <div class="item-actions">
-                          <button class="btn btn-danger btn-sm del-memory">删除</button>
-                        </div>
-                      </div>
-                    `).join("");
-
-            list.querySelectorAll(".del-memory").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = e.target.closest(".item").dataset.id;
-                    if (confirm("确定删除这条回忆吗？")) {
-                        state.memories = state.memories.filter(x => x.id !== id);
-                        saveState(); renderAll();
-                    }
-                });
-            });
-        }
-
-        function renderGoals() {
-            const list = $("#goalList");
-            if (!state.goals.length) {
-                list.innerHTML = `<div class="empty">还没有共同目标，先定一个小目标。</div>`;
-                return;
-            }
-            list.innerHTML = state.goals.map(goal => `
-                    <div class="item ${goal.done ? "done" : ""}" data-id="${goal.id}">
-                      <div class="task-left">
-                        <input class="check goal-check" type="checkbox" ${goal.done ? "checked" : ""} />
-                        <div class="item-main">
-                          <div class="item-title">${escapeHTML(goal.text)}</div>
-                          <div class="item-meta"><span>${formatDateTime(goal.createdAt)}</span></div>
-                        </div>
-                      </div>
-                      <div class="item-actions">
-                        <button class="btn btn-danger btn-sm del-goal">删除</button>
-                      </div>
-                    </div>
-                  `).join("");
-
-            list.querySelectorAll(".goal-check").forEach(el => {
-                el.addEventListener("change", (e) => {
-                    const id = e.target.closest(".item").dataset.id;
-                    const g = state.goals.find(x => x.id === id);
-                    if (g) { g.done = e.target.checked; saveState(); renderAll(); }
-                });
-            });
-            list.querySelectorAll(".del-goal").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = e.target.closest(".item").dataset.id;
-                    if (confirm("删除这条共同目标？")) {
-                        state.goals = state.goals.filter(x => x.id !== id);
-                        saveState(); renderAll();
-                    }
-                });
-            });
-        }
-
-        function renderNotes() {
-            const list = $("#noteList");
-            if (!state.notes.length) {
-                list.innerHTML = `<div class="empty">这里还没有留言。</div>`;
-                return;
-            }
-            list.innerHTML = [...state.notes]
-                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-                .map(note => `
-                      <div class="item" data-id="${note.id}">
-                        <div class="item-main">
-                          <div class="item-title">一句话留言</div>
-                          <div class="item-sub">${escapeHTML(note.text)}</div>
-                          <div class="item-meta"><span>${formatDateTime(note.createdAt)}</span></div>
-                        </div>
-                        <div class="item-actions">
-                          <button class="btn btn-danger btn-sm del-note">删除</button>
-                        </div>
-                      </div>
-                    `).join("");
-
-            list.querySelectorAll(".del-note").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = e.target.closest(".item").dataset.id;
-                    if (confirm("删除这条留言？")) {
-                        state.notes = state.notes.filter(x => x.id !== id);
-                        saveState(); renderAll();
-                    }
-                });
-            });
-        }
-
-        function renderAnniversary() {
-            $("#annivDate").value = state.anniversary || "";
-            if (!state.anniversary) {
-                $("#annivText").textContent = "还没有设置纪念日。";
-                $("#dd").textContent = "0";
-                $("#hh").textContent = "0";
-                $("#mm").textContent = "0";
-                return;
-            }
-            const target = new Date(state.anniversary + "T00:00:00");
-            const nowDate = new Date();
-            const diff = target.getTime() - nowDate.getTime();
-            const totalMin = Math.max(0, Math.floor(diff / 60000));
-            const days = Math.floor(totalMin / (60 * 24));
-            const hours = Math.floor((totalMin % (60 * 24)) / 60);
-            const mins = totalMin % 60;
-            $("#dd").textContent = days;
-            $("#hh").textContent = hours;
-            $("#mm").textContent = mins;
-            $("#annivText").textContent = `纪念日：${formatDate(state.anniversary)}。`;
-        }
-
-        function syncStats() {
-            $("#diaryNum").textContent = state.diaries.length;
-            $("#memoryNum").textContent = state.memories.length;
-            $("#streakNum").textContent = calcStreak(state.diaries);
-        }
-
-        function renderAll() {
-            if (state.theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
-            else document.documentElement.removeAttribute("data-theme");
-            $("#todayText").textContent = "今天是 " + new Date().toLocaleDateString("zh-CN", {
-                year: "numeric", month: "long", day: "numeric", weekday: "long"
-            }) + "，适合把重要的事情先做完。";
-            renderQuote();
-            updateDashboard();
-            renderTasks();
-            renderTodaySummary();
-            renderDiaries();
-            renderMemories();
-            renderGoals();
-            renderNotes();
-            renderAnniversary();
-            syncStats();
-        }
-
-        // ========= 远程任务交互 =========
-        async function loadRemoteTasks() {
-            try {
-                const res = await fetch(`https://love-growth-production.up.railway.app/tasks/${roomCode}`);
-                if (!res.ok) throw new Error("获取任务失败");
-                const tasks = await res.json();
-                state.tasks = tasks.map(t => ({
-                    ...t,
-                    createdAt: t.createdAt || now()
-                }));
-                saveState();
-            } catch (e) {
-                console.warn("加载远程任务失败，使用本地缓存", e);
-            }
-        }
-
-        socket.on("taskAdded", (task) => {
-            state.tasks.push({
-                ...task,
-                createdAt: task.createdAt || now()
-            });
-            saveState();
-            renderAll();
-        });
-
-        // 修改任务添加事件，调用后端 API
-        const taskForm = document.getElementById("taskForm");
-        if (taskForm) {
-            taskForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const input = document.getElementById("taskInput");
-                if (!input) return;
-                const text = input.value.trim();
-                if (!text) return;
-
-                try {
-                    const res = await fetch("https://love-growth-production.up.railway.app/tasks", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ roomCode: roomCode, text })
-                    });
-                    if (!res.ok) throw new Error("添加失败");
-                    // 后端会通过 socket 广播任务，我们无需手动添加
-                } catch (err) {
-                    alert("添加任务失败，请确认后端已启动");
-                    console.error(err);
+            socket.on("taskAdded", (task) => {
+                const exists = tasks.some(t => t.id === task.id);
+                if (!exists) {
+                    tasks.push(task);
+                    renderTasks(tasks);
                 }
-                input.value = "";
+            });
+
+            socket.on("syncTasks", (list) => {
+                renderTasks(list);
             });
         }
 
-        // 其他所有原有事件绑定（日记、回忆、目标、留言、纪念日、主题、导出/导入等）保持不变
-        // 为节省篇幅不全部列出，你只要把原来你自己 index.html 底部 script 中的那些事件复制过来即可
-        // （除了任务相关的需要替换为上面的异步版本）
-        // 初始化
-        async function initAsync() {
-            await loadRemoteTasks();
-            if (state.theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
-            $("#themeBtn").textContent = state.theme === "dark" ? "☀️ 日间模式" : "🌙 夜间模式";
-            renderAll();
-            setTimeout(() => {
-                document.querySelectorAll(".fade-in").forEach(el => el.classList.add("show"));
-            }, 120);
+        function saveIdentity() {
+            localStorage.setItem(STORAGE_KEYS.roomCode, currentRoomCode);
+            localStorage.setItem(STORAGE_KEYS.name, displayName);
         }
 
-        initAsync();
+        function openGate() {
+            $("#gate").style.display = "grid";
+        }
 
-        // 纪念日倒计时刷新
-        setInterval(() => {
-            renderAnniversary();
-            $("#todayText").textContent = "今天是 " + new Date().toLocaleDateString("zh-CN", {
-                year: "numeric", month: "long", day: "numeric", weekday: "long"
-            }) + "，适合把重要的事情先做完。";
-        }, 1000 * 30);
+        function closeGate() {
+            $("#gate").style.display = "none";
+        }
+
+        function submitGate(e) {
+            e.preventDefault();
+            const room = $("#roomCodeInput").value.trim();
+            const name = $("#displayNameInput").value.trim();
+
+            if (!room) {
+                alert("先输入房间码");
+                return;
+            }
+
+            currentRoomCode = room;
+            displayName = name || "Ta";
+            saveIdentity();
+            setRoomInfo();
+            closeGate();
+            connectSocket();
+        }
+
+        function addTask(text) {
+            const value = String(text || $("#taskInput").value || "").trim();
+            if (!value || !currentRoomCode) return;
+
+            socket.emit("addTask", {
+                roomCode: currentRoomCode,
+                text: value
+            });
+
+            $("#taskInput").value = "";
+            $("#taskInput").focus();
+        }
+
+        function toggleTask(id) {
+            if (!currentRoomCode) return;
+            socket.emit("toggleTask", { roomCode: currentRoomCode, id });
+        }
+
+        function deleteTask(id) {
+            if (!currentRoomCode) return;
+            socket.emit("deleteTask", { roomCode: currentRoomCode, id });
+        }
+
+        function initUI() {
+            applyTheme();
+            updateTip();
+            setRoomInfo();
+
+            $("#themeBtn").addEventListener("click", () => {
+                const next = (localStorage.getItem(STORAGE_KEYS.theme) || "dark") === "dark" ? "light" : "dark";
+                setTheme(next);
+            });
+
+            $("#addBtn").addEventListener("click", () => addTask());
+            $("#taskInput").addEventListener("keydown", (e) => {
+                if (e.key === "Enter") addTask();
+            });
+
+            $("#scrollToTasks").addEventListener("click", () => {
+                $("#taskSection").scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+
+            $("#quickAddBtn").addEventListener("click", () => {
+                const quick = ["阅读 30 分钟", "运动 20 分钟", "写今日总结"];
+                addTask(quick[Math.floor(Math.random() * quick.length)]);
+            });
+
+            $("#copyRoomBtn").addEventListener("click", async () => {
+                if (!currentRoomCode) return alert("还没有房间码");
+                try {
+                    await navigator.clipboard.writeText(currentRoomCode);
+                    $("#copyRoomBtn").textContent = "已复制";
+                    setTimeout(() => $("#copyRoomBtn").textContent = "复制房间码", 1200);
+                } catch {
+                    prompt("复制失败，手动复制这个房间码：", currentRoomCode);
+                }
+            });
+
+            $("#randomRoomBtn").addEventListener("click", () => {
+                const code = "room-" + Math.random().toString(36).slice(2, 8);
+                $("#roomCodeInput").value = code;
+            });
+
+            $("#gateForm").addEventListener("submit", submitGate);
+
+            document.querySelectorAll(".chip").forEach(el => {
+                el.addEventListener("click", () => addTask(el.dataset.text));
+            });
+
+            if (currentRoomCode && displayName) {
+                $("#roomCodeInput").value = currentRoomCode;
+                $("#displayNameInput").value = displayName;
+                closeGate();
+                connectSocket();
+            } else {
+                openGate();
+                $("#roomCodeInput").value = currentRoomCode;
+                $("#displayNameInput").value = displayName;
+                $("#roomCodeInput").focus();
+                setStatus(false);
+            }
+
+            renderStats();
+            setTimeout(() => {
+                document.querySelectorAll(".panel, .hero").forEach(el => {
+                    el.animate(
+                        [{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1, transform: "translateY(0)" }],
+                        { duration: 520, easing: "ease-out" }
+                    );
+                });
+            }, 60);
+        }
+
+        initUI();
     </script>
 </body>
 </html>
