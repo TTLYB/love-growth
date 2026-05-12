@@ -1,2 +1,2 @@
 [phases.setup]
-nixPackages = ["nodejs_24"]
+nixPackages = ["nodejs-24"]
