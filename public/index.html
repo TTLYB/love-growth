@@ -71,7 +71,7 @@
     <!-- 2. 唯一的主脚本 -->
     <script>
         // ========= Socket 连接 =========
-        const socket = io("http://localhost:3000");
+        const socket = io("love-growth-production.up.railway.app");
         const roomCode ="SG6P4S";   // ⚠️ 改成你 curl 获得的真实 roomCode
         socket.emit("joinRoom", roomCode);
 
@@ -488,7 +488,7 @@
         // ========= 远程任务交互 =========
         async function loadRemoteTasks() {
             try {
-                const res = await fetch(`http://localhost:3000/tasks/${roomCode}`);
+                const res = await fetch(`https://love-growth-production.up.railway.app/tasks/${roomCode}`);
                 if (!res.ok) throw new Error("获取任务失败");
                 const tasks = await res.json();
                 state.tasks = tasks.map(t => ({
@@ -521,7 +521,7 @@
                 if (!text) return;
 
                 try {
-                    const res = await fetch("http://localhost:3000/tasks", {
+                    const res = await fetch("https://love-growth-production.up.railway.app/tasks", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ roomCode: roomCode, text })
