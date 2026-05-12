@@ -70,6 +70,22 @@ io.on("connection", (socket) => {
   });
 });
 
+// ========== 启动时自动执行数据库迁移 ==========
+(async () => {
+  console.log('⏳ 检查数据库连接并执行迁移...');
+  // 打印连接字符串，但隐藏密码
+  const safeUrl = (process.env.DATABASE_URL || '').replace(/:\/\/(.*):(.*)@/, '://$1:****@');
+  console.log('DATABASE_URL:', safeUrl);
+
+  try {
+    const { execSync } = await import('child_process');
+    execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+    console.log('✅ 数据库迁移成功');
+  } catch (err) {
+    console.error('❌ 数据库迁移失败:', err.message);
+  }
+})();
+
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, '0.0.0.0', () => {
