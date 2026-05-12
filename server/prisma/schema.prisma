@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // 注意：Prisma 7 中不再写 url，连接URL在 prisma.config.ts 中配置
+}
+
+model Room {
+  id        String   @id @default(cuid())
+  roomCode  String   @unique
+  createdAt DateTime @default(now())
+
+  diaries Diary[]
+  tasks   Task[]
+  chats   Chat[]
+}
+
+model Diary {
+  id        String   @id @default(cuid())
+  content   String
+  author    String
+  createdAt DateTime @default(now())
+
+  roomId String
+  room   Room @relation(fields: [roomId], references: [id])
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  text      String
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  roomId String
+  room   Room @relation(fields: [roomId], references: [id])
+}
+
+model Chat {
+  id        String   @id @default(cuid())
+  message   String
+  sender    String
+  createdAt DateTime @default(now())
+
+  roomId String
+  room   Room @relation(fields: [roomId], references: [id])
+}

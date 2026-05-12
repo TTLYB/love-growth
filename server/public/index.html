@@ -1,0 +1,564 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>成长轨迹 · 我们的小站</title>
+    <style>
+        /* 你的完整 CSS 保持原样，这里为了简洁省略，请把你自己的 CSS 粘贴到这里 */
+        /* 务必保留你之前所有样式代码，否则页面会乱 */
+    </style>
+</head>
+<!-- 注意：这里不再放任何 script，统一放在 body 底部 -->
+<body>
+    <div class="enter-mask" id="enterMask">
+        <div class="enter-card">
+            <div class="enter-badge">🌱 成长计划 · 共用空间</div>
+            <h1>我们的小站</h1>
+            <p>记录日常、日记、心情、共同目标与回忆。<br>把生活变成可回看的轨迹。</p>
+            <button class="btn btn-primary" id="enterBtn">进入网站</button>
+        </div>
+    </div>
+
+    <button class="btn btn-ghost theme-toggle btn-sm" id="themeBtn">🌙 夜间模式</button>
+
+    <header class="hero">
+        <div class="wrap hero-grid">
+            <div class="hero-copy fade-in">
+                <div class="eyebrow">📌 Daily Growth Space</div>
+                <h1>把每天的生活<br>都认真存起来</h1>
+                <p>
+                    这是一个适合两个人一起用的成长网站：可以打卡、写日记、记心情、存回忆、做共同清单，
+                    也可以导出备份，慢慢把它变成属于你们自己的时间胶囊。
+                </p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary btn-sm" href="#dashboard">查看今日看板</a>
+                    <a class="btn btn-ghost btn-sm" href="#diary">写一篇日记</a>
+                    <a class="btn btn-ghost btn-sm" href="#couple">共同目标</a>
+                </div>
+            </div>
+
+            <div class="hero-panel fade-in">
+                <div class="mini-stat"><span>今日完成</span><strong id="heroProgress">0%</strong></div>
+                <div class="mini-stat"><span>连续记录</span><strong><em id="streakNum">0</em> 天</strong></div>
+                <div class="mini-stat"><span>日记数量</span><strong id="diaryNum">0</strong></div>
+                <div class="mini-stat"><span>回忆数量</span><strong id="memoryNum">0</strong></div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <a href="#dashboard" class="active">🏠 看板</a>
+        <a href="#diary">📝 日记</a>
+        <a href="#memory">📷 回忆</a>
+        <a href="#couple">💞 共用</a>
+        <a href="#library">📚 书单</a>
+        <a href="#backup">💾 备份</a>
+    </nav>
+
+    <main>
+        <!-- 你所有的 section 保持不变，这里省略 -->
+    </main>
+
+    <footer class="footer fade-in">
+        <div id="footerQuote">每一天都算数。</div>
+        <div style="margin-top:6px;">© 成长轨迹 · 记录生活，也记录彼此</div>
+    </footer>
+
+    <!-- 1. 引入 Socket.IO 客户端 -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+    <!-- 2. 唯一的主脚本 -->
+    <script>
+        // ========= Socket 连接 =========
+        const socket = io("http://localhost:3000");
+        const roomCode ="SG6P4S";   // ⚠️ 改成你 curl 获得的真实 roomCode
+        socket.emit("joinRoom", roomCode);
+
+        // ========= 本地存储相关 =========
+        const STORAGE_KEY = "growth_space_v2";
+        const DEFAULT_ANNIV = "";
+        const QUOTES = [
+            "今天做一点，明天就会轻松一点。",
+            "关系会更稳，靠的是持续的认真。",
+            "把生活记下来，记忆就不会轻易散掉。",
+            "微小的坚持，最后都会变成答案。",
+            "不用一下子变好，先不停下来就行。",
+            "认真过每一天，时间会给你回礼。"
+        ];
+
+        const DEFAULT_STATE = {
+            theme: "light",
+            tasks: [],                         // 由后端加载
+            diaries: [
+                { id: uid(), title: "今天开始记录", mood: "🙂 平静", content: "从今天起，把我们的生活慢慢存下来。", date: todayISO(), createdAt: now() }
+            ],
+            memories: [],
+            goals: [
+                { id: uid(), text: "一起坚持一件长期的小事", done: false, createdAt: now() }
+            ],
+            notes: [
+                { id: uid(), text: "今天也要记得好好吃饭。", createdAt: now() }
+            ],
+            anniversary: DEFAULT_ANNIV,
+            editingDiaryId: null
+        };
+
+        function now() { return new Date().toISOString(); }
+        function todayISO() {
+            const d = new Date();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${d.getFullYear()}-${m}-${day}`;
+        }
+        function uid() {
+            return "id_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        }
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return structuredClone(DEFAULT_STATE);
+                const parsed = JSON.parse(raw);
+                return { ...structuredClone(DEFAULT_STATE), ...parsed };
+            } catch (e) {
+                return structuredClone(DEFAULT_STATE);
+            }
+        }
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            syncStats();
+        }
+        let state = loadState();
+
+        const $ = (sel) => document.querySelector(sel);
+        const escapeHTML = (str = "") => str
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#39;");
+
+        function formatDateTime(iso) {
+            const d = new Date(iso);
+            return d.toLocaleString("zh-CN", {
+                year: "numeric", month: "2-digit", day: "2-digit",
+                hour: "2-digit", minute: "2-digit"
+            });
+        }
+        function formatDate(iso) {
+            const d = new Date(iso + "T00:00:00");
+            return d.toLocaleDateString("zh-CN", {
+                year: "numeric", month: "long", day: "numeric", weekday: "long"
+            });
+        }
+
+        function setTheme(theme) {
+            state.theme = theme;
+            document.documentElement.setAttribute("data-theme", theme);
+            $("#themeBtn").textContent = theme === "dark" ? "☀️ 日间模式" : "🌙 夜间模式";
+            saveState();
+        }
+
+        function renderQuote() {
+            const idx = new Date().getDate() % QUOTES.length;
+            $("#quoteBox").textContent = QUOTES[idx];
+            $("#footerQuote").textContent = QUOTES[(idx + 2) % QUOTES.length];
+        }
+
+        function calcStreak(diaries) {
+            if (!diaries.length) return 0;
+            const dates = [...new Set(diaries.map(d => d.date))].sort().reverse();
+            let streak = 0;
+            let current = new Date(todayISO() + "T00:00:00");
+            for (const dateStr of dates) {
+                const dt = new Date(dateStr + "T00:00:00");
+                if (dt.toDateString() === current.toDateString()) {
+                    streak++;
+                    current.setDate(current.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        function updateDashboard() {
+            const total = state.tasks.length;
+            const done = state.tasks.filter(t => t.done).length;
+            const left = total - done;
+            const percent = total ? Math.round(done / total * 100) : 0;
+            $("#taskTotal").textContent = total;
+            $("#taskDone").textContent = done;
+            $("#taskLeft").textContent = left;
+            $("#progressPercent").textContent = percent + "%";
+            $("#heroProgress").textContent = percent + "%";
+            const circumference = 2 * Math.PI * 68;
+            const offset = circumference - percent / 100 * circumference;
+            const circle = $("#progressCircle");
+            circle.style.strokeDasharray = circumference;
+            circle.style.strokeDashoffset = offset;
+            $("#dashboardNote").textContent =
+                percent === 100 ? "今日任务已经完成，今天很棒。" :
+                    percent >= 60 ? "已经完成大半了，继续往前一点。" :
+                        "先完成最重要的一项，就会轻松很多。";
+        }
+
+        function renderTasks() {
+            const list = $("#taskList");
+            if (!state.tasks.length) {
+                list.innerHTML = `<div class="empty">还没有任务，先添加一个今日目标。</div>`;
+                return;
+            }
+            list.innerHTML = state.tasks.map(task => `
+                    <div class="item ${task.done ? "done" : ""}" data-id="${task.id}">
+                      <div class="task-left">
+                        <input class="check" type="checkbox" ${task.done ? "checked" : ""} />
+                        <div class="item-main">
+                          <div class="item-title">${escapeHTML(task.text)}</div>
+                          <div class="item-meta">
+                            <span>创建于 ${formatDateTime(task.createdAt)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-actions">
+                        <button class="btn btn-ghost btn-sm edit-task">编辑</button>
+                        <button class="btn btn-danger btn-sm del-task">删除</button>
+                      </div>
+                    </div>
+                  `).join("");
+
+            list.querySelectorAll(".check").forEach(el => {
+                el.addEventListener("change", (e) => {
+                    const id = e.target.closest(".item").dataset.id;
+                    const t = state.tasks.find(x => x.id === id);
+                    if (t) { t.done = e.target.checked; saveState(); renderAll(); }
+                });
+            });
+            list.querySelectorAll(".edit-task").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = e.target.closest(".item").dataset.id;
+                    const t = state.tasks.find(x => x.id === id);
+                    if (!t) return;
+                    const text = prompt("修改任务：", t.text);
+                    if (text && text.trim()) {
+                        t.text = text.trim();
+                        saveState(); renderAll();
+                    }
+                });
+            });
+            list.querySelectorAll(".del-task").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = e.target.closest(".item").dataset.id;
+                    if (confirm("确定删除这条任务吗？")) {
+                        state.tasks = state.tasks.filter(x => x.id !== id);
+                        saveState(); renderAll();
+                    }
+                });
+            });
+        }
+
+        // ========= 以下所有渲染函数全部保留完整 =========
+        function renderTodaySummary() {
+            if (!state.diaries.length) {
+                $("#todaySummary").textContent = "还没有日记，先写第一篇吧。";
+                return;
+            }
+            const latest = [...state.diaries].sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+            $("#todaySummary").innerHTML = `
+                    <strong>${escapeHTML(latest.title || "未命名日记")}</strong><br>
+                    <span class="chip" style="margin:8px 0;">${escapeHTML(latest.mood)}</span>
+                    <div style="height:8px"></div>
+                    ${escapeHTML(latest.content).replaceAll("\n", "<br>")}
+                  `;
+        }
+
+        function renderDiaries() {
+            const list = $("#diaryList");
+            if (!state.diaries.length) {
+                list.innerHTML = `<div class="empty">暂无日记，写下今天的心情吧。</div>`;
+                return;
+            }
+            list.innerHTML = [...state.diaries]
+                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+                .map(item => `
+                      <div class="item ${state.editingDiaryId === item.id ? "done" : ""}" data-id="${item.id}">
+                        <div class="item-main">
+                          <div class="item-title">${escapeHTML(item.title || "未命名日记")}</div>
+                          <div class="item-meta">
+                            <span class="chip">${escapeHTML(item.mood)}</span>
+                            <span>${formatDateTime(item.createdAt)}</span>
+                          </div>
+                          <div class="item-sub" style="margin-top:8px">${escapeHTML(item.content)}</div>
+                        </div>
+                        <div class="item-actions">
+                          <button class="btn btn-ghost btn-sm edit-diary">编辑</button>
+                          <button class="btn btn-danger btn-sm del-diary">删除</button>
+                        </div>
+                      </div>
+                    `).join("");
+
+            list.querySelectorAll(".edit-diary").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = e.target.closest(".item").dataset.id;
+                    const d = state.diaries.find(x => x.id === id);
+                    if (!d) return;
+                    state.editingDiaryId = id;
+                    $("#diaryFormTitle").textContent = "编辑日记";
+                    $("#diaryTitle").value = d.title;
+                    $("#diaryMood").value = d.mood;
+                    $("#diaryContent").value = d.content;
+                    $("#diarySubmitBtn").textContent = "保存修改";
+                    $("#cancelDiaryEditBtn").style.display = "inline-flex";
+                    window.location.hash = "#diary";
+                });
+            });
+            list.querySelectorAll(".del-diary").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = e.target.closest(".item").dataset.id;
+                    if (confirm("确定删除这篇日记吗？")) {
+                        state.diaries = state.diaries.filter(x => x.id !== id);
+                        if (state.editingDiaryId === id) cancelDiaryEdit();
+                        saveState(); renderAll();
+                    }
+                });
+            });
+        }
+
+        function cancelDiaryEdit() {
+            state.editingDiaryId = null;
+            $("#diaryFormTitle").textContent = "写一篇新日记";
+            $("#diaryTitle").value = "";
+            $("#diaryMood").value = "🙂 平静";
+            $("#diaryContent").value = "";
+            $("#diarySubmitBtn").textContent = "保存日记";
+            $("#cancelDiaryEditBtn").style.display = "none";
+            saveState();
+        }
+
+        function renderMemories() {
+            const list = $("#memoryList");
+            if (!state.memories.length) {
+                list.innerHTML = `<div class="empty">还没有回忆，上传或记录一个小瞬间吧。</div>`;
+                return;
+            }
+            list.innerHTML = [...state.memories]
+                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+                .map(item => `
+                      <div class="item" data-id="${item.id}">
+                        <div class="item-main">
+                          <div class="item-title">${escapeHTML(item.tag || "回忆")}</div>
+                          <div class="item-meta"><span>${formatDateTime(item.createdAt)}</span></div>
+                          <div class="item-sub" style="margin-top:8px">${escapeHTML(item.text)}</div>
+                          ${item.image ? `<div style="margin-top:10px"><img src="${escapeHTML(item.image)}" alt="回忆图片" style="width:100%;max-height:240px;object-fit:cover;border-radius:16px;border:1px solid var(--line)"></div>` : ""}
+                        </div>
+                        <div class="item-actions">
+                          <button class="btn btn-danger btn-sm del-memory">删除</button>
+                        </div>
+                      </div>
+                    `).join("");
+
+            list.querySelectorAll(".del-memory").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = e.target.closest(".item").dataset.id;
+                    if (confirm("确定删除这条回忆吗？")) {
+                        state.memories = state.memories.filter(x => x.id !== id);
+                        saveState(); renderAll();
+                    }
+                });
+            });
+        }
+
+        function renderGoals() {
+            const list = $("#goalList");
+            if (!state.goals.length) {
+                list.innerHTML = `<div class="empty">还没有共同目标，先定一个小目标。</div>`;
+                return;
+            }
+            list.innerHTML = state.goals.map(goal => `
+                    <div class="item ${goal.done ? "done" : ""}" data-id="${goal.id}">
+                      <div class="task-left">
+                        <input class="check goal-check" type="checkbox" ${goal.done ? "checked" : ""} />
+                        <div class="item-main">
+                          <div class="item-title">${escapeHTML(goal.text)}</div>
+                          <div class="item-meta"><span>${formatDateTime(goal.createdAt)}</span></div>
+                        </div>
+                      </div>
+                      <div class="item-actions">
+                        <button class="btn btn-danger btn-sm del-goal">删除</button>
+                      </div>
+                    </div>
+                  `).join("");
+
+            list.querySelectorAll(".goal-check").forEach(el => {
+                el.addEventListener("change", (e) => {
+                    const id = e.target.closest(".item").dataset.id;
+                    const g = state.goals.find(x => x.id === id);
+                    if (g) { g.done = e.target.checked; saveState(); renderAll(); }
+                });
+            });
+            list.querySelectorAll(".del-goal").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = e.target.closest(".item").dataset.id;
+                    if (confirm("删除这条共同目标？")) {
+                        state.goals = state.goals.filter(x => x.id !== id);
+                        saveState(); renderAll();
+                    }
+                });
+            });
+        }
+
+        function renderNotes() {
+            const list = $("#noteList");
+            if (!state.notes.length) {
+                list.innerHTML = `<div class="empty">这里还没有留言。</div>`;
+                return;
+            }
+            list.innerHTML = [...state.notes]
+                .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+                .map(note => `
+                      <div class="item" data-id="${note.id}">
+                        <div class="item-main">
+                          <div class="item-title">一句话留言</div>
+                          <div class="item-sub">${escapeHTML(note.text)}</div>
+                          <div class="item-meta"><span>${formatDateTime(note.createdAt)}</span></div>
+                        </div>
+                        <div class="item-actions">
+                          <button class="btn btn-danger btn-sm del-note">删除</button>
+                        </div>
+                      </div>
+                    `).join("");
+
+            list.querySelectorAll(".del-note").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = e.target.closest(".item").dataset.id;
+                    if (confirm("删除这条留言？")) {
+                        state.notes = state.notes.filter(x => x.id !== id);
+                        saveState(); renderAll();
+                    }
+                });
+            });
+        }
+
+        function renderAnniversary() {
+            $("#annivDate").value = state.anniversary || "";
+            if (!state.anniversary) {
+                $("#annivText").textContent = "还没有设置纪念日。";
+                $("#dd").textContent = "0";
+                $("#hh").textContent = "0";
+                $("#mm").textContent = "0";
+                return;
+            }
+            const target = new Date(state.anniversary + "T00:00:00");
+            const nowDate = new Date();
+            const diff = target.getTime() - nowDate.getTime();
+            const totalMin = Math.max(0, Math.floor(diff / 60000));
+            const days = Math.floor(totalMin / (60 * 24));
+            const hours = Math.floor((totalMin % (60 * 24)) / 60);
+            const mins = totalMin % 60;
+            $("#dd").textContent = days;
+            $("#hh").textContent = hours;
+            $("#mm").textContent = mins;
+            $("#annivText").textContent = `纪念日：${formatDate(state.anniversary)}。`;
+        }
+
+        function syncStats() {
+            $("#diaryNum").textContent = state.diaries.length;
+            $("#memoryNum").textContent = state.memories.length;
+            $("#streakNum").textContent = calcStreak(state.diaries);
+        }
+
+        function renderAll() {
+            if (state.theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
+            else document.documentElement.removeAttribute("data-theme");
+            $("#todayText").textContent = "今天是 " + new Date().toLocaleDateString("zh-CN", {
+                year: "numeric", month: "long", day: "numeric", weekday: "long"
+            }) + "，适合把重要的事情先做完。";
+            renderQuote();
+            updateDashboard();
+            renderTasks();
+            renderTodaySummary();
+            renderDiaries();
+            renderMemories();
+            renderGoals();
+            renderNotes();
+            renderAnniversary();
+            syncStats();
+        }
+
+        // ========= 远程任务交互 =========
+        async function loadRemoteTasks() {
+            try {
+                const res = await fetch(`http://localhost:3000/tasks/${roomCode}`);
+                if (!res.ok) throw new Error("获取任务失败");
+                const tasks = await res.json();
+                state.tasks = tasks.map(t => ({
+                    ...t,
+                    createdAt: t.createdAt || now()
+                }));
+                saveState();
+            } catch (e) {
+                console.warn("加载远程任务失败，使用本地缓存", e);
+            }
+        }
+
+        socket.on("taskAdded", (task) => {
+            state.tasks.push({
+                ...task,
+                createdAt: task.createdAt || now()
+            });
+            saveState();
+            renderAll();
+        });
+
+        // 修改任务添加事件，调用后端 API
+        const taskForm = document.getElementById("taskForm");
+        if (taskForm) {
+            taskForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const input = document.getElementById("taskInput");
+                if (!input) return;
+                const text = input.value.trim();
+                if (!text) return;
+
+                try {
+                    const res = await fetch("http://localhost:3000/tasks", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ roomCode: roomCode, text })
+                    });
+                    if (!res.ok) throw new Error("添加失败");
+                    // 后端会通过 socket 广播任务，我们无需手动添加
+                } catch (err) {
+                    alert("添加任务失败，请确认后端已启动");
+                    console.error(err);
+                }
+                input.value = "";
+            });
+        }
+
+        // 其他所有原有事件绑定（日记、回忆、目标、留言、纪念日、主题、导出/导入等）保持不变
+        // 为节省篇幅不全部列出，你只要把原来你自己 index.html 底部 script 中的那些事件复制过来即可
+        // （除了任务相关的需要替换为上面的异步版本）
+        // 初始化
+        async function initAsync() {
+            await loadRemoteTasks();
+            if (state.theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
+            $("#themeBtn").textContent = state.theme === "dark" ? "☀️ 日间模式" : "🌙 夜间模式";
+            renderAll();
+            setTimeout(() => {
+                document.querySelectorAll(".fade-in").forEach(el => el.classList.add("show"));
+            }, 120);
+        }
+
+        initAsync();
+
+        // 纪念日倒计时刷新
+        setInterval(() => {
+            renderAnniversary();
+            $("#todayText").textContent = "今天是 " + new Date().toLocaleDateString("zh-CN", {
+                year: "numeric", month: "long", day: "numeric", weekday: "long"
+            }) + "，适合把重要的事情先做完。";
+        }, 1000 * 30);
+    </script>
+</body>
+</html>
