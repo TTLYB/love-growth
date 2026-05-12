@@ -850,7 +850,11 @@ function enterSpace() {
   window.location.href = 'space.html';
 }
 function openDiary() {
-  window.location.href = 'diary.html';
+  if (roomCode) {
+    window.location.href = 'diary.html?room=' + roomCode;
+  } else {
+    alert('请先创建或加入房间');
+  }
 }
 </script>
 

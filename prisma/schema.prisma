@@ -11,10 +11,10 @@ model Room {
   id        String   @id @default(cuid())
   roomCode  String   @unique
   createdAt DateTime @default(now())
-
-  diaries Diary[]
-  tasks   Task[]
-  chats   Chat[]
+  diaries   Diary[]
+  tasks     Task[]
+  chats     Chat[]
+  // 如果有 notes 或其他也保留
 }
 
 model Diary {
