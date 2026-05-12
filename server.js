@@ -70,8 +70,8 @@ io.on("connection", (socket) => {
   });
 });
 
-// 修正端口
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`服务器启动：http://localhost:${PORT}`);
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on ${PORT}`);
 });
