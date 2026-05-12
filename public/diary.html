@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>共享日记 · Our Space</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --accent: #ec4899;
+      --accent2: #f472b6;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --line: rgba(255,255,255,.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: radial-gradient(circle at top, rgba(236,72,153,.15), transparent 30%), var(--bg);
+      color: var(--text);
+      font-family: 'Inter', 'PingFang SC', sans-serif;
+      min-height: 100vh;
+      padding: 40px;
+    }
+    .container { max-width: 900px; margin: auto; }
+    h1 { font-size: 42px; font-weight: 800; margin-bottom: 30px; }
+    .card {
+      background: rgba(30,41,59,.75);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .input-group { display: flex; gap: 12px; margin-bottom: 12px; }
+    .input-group input {
+      flex: 1;
+      background: #0f172a;
+      border: none;
+      outline: none;
+      border-radius: 14px;
+      padding: 14px;
+      color: white;
+      font-size: 16px;
+    }
+    textarea {
+      width: 100%;
+      height: 160px;
+      resize: none;
+      border: none;
+      outline: none;
+      border-radius: 18px;
+      background: #0f172a;
+      color: white;
+      padding: 18px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 18px;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .back-btn { margin-bottom: 20px; padding: 10px 20px; border-radius: 12px; background: rgba(255,255,255,.1); color: white; cursor: pointer; border: none; }
+
+    /* 文件夹式日记列表 */
+    .diary-list { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+    .diary-folder {
+      background: rgba(30,41,59,.65);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .diary-folder:hover { border-color: rgba(236,72,153,.3); transform: translateY(-2px); }
+    .folder-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .folder-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+    }
+    .folder-date {
+      font-size: 14px;
+      color: var(--muted);
+      white-space: nowrap;
+      margin-left: 12px;
+    }
+    .folder-content {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--line);
+      line-height: 1.8;
+      display: none;  /* 默认折叠 */
+    }
+    .diary-folder.open .folder-content { display: block; }
+    .folder-author { font-size: 13px; color: var(--accent); margin-top: 8px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <button class="back-btn" onclick="location.href='index.html'">← 返回主页</button>
+  <h1>💌 共享日记</h1>
+
+  <div class="card">
+    <div class="input-group">
+      <input type="text" id="titleInput" placeholder="给今天的日记起个标题…" maxlength="50">
+    </div>
+    <div class="input-group">
+      <input type="text" id="authorInput" placeholder="你的名字" value="我">
+    </div>
+    <textarea id="diaryContent" placeholder="今天一起做了什么？想对TA说什么？"></textarea>
+    <button onclick="saveDiary()">📁 保存日记</button>
+  </div>
+
+  <div class="diary-list" id="diaryList"></div>
+</div>
+
+<script>
+  const socket = io();
+  let roomCode = new URLSearchParams(window.location.search).get('room');
+  if (!roomCode) {
+    fetch('/create-room')
+      .then(res => res.json())
+      .then(data => {
+        roomCode = data.roomCode;
+        window.location.href = `?room=${roomCode}`;
+      });
+  } else {
+    socket.emit('joinRoom', roomCode);
+    loadDiaries();
+  }
+
+  async function loadDiaries() {
+    const res = await fetch(`/diaries/${roomCode}`);
+    const diaries = await res.json();
+    renderDiaries(diaries);
+  }
+
+  function renderDiaries(diaries) {
+    const list = document.getElementById('diaryList');
+    list.innerHTML = '';
+    if (!diaries.length) {
+      list.innerHTML = '<p style="color: var(--muted);">还没有日记，写下第一条吧 💕</p>';
+      return;
+    }
+    diaries.forEach(diary => {
+      const folder = document.createElement('div');
+      folder.className = 'diary-folder';
+      folder.innerHTML = `
+        <div class="folder-header">
+          <span class="folder-title">📂 ${escapeHtml(diary.title) || '未命名日记'}</span>
+          <span class="folder-date">${new Date(diary.createdAt).toLocaleDateString('zh-CN', { year:'numeric', month:'short', day:'numeric' })}</span>
+        </div>
+        <div class="folder-content">
+          <div>${escapeHtml(diary.content)}</div>
+          <div class="folder-author">✍️ ${escapeHtml(diary.author)}</div>
+        </div>
+      `;
+      // 点击展开/折叠
+      folder.addEventListener('click', () => {
+        folder.classList.toggle('open');
+      });
+      list.appendChild(folder);
+    });
+  }
+
+  async function saveDiary() {
+    const content = document.getElementById('diaryContent').value.trim();
+    if (!content) return;
+    const title = document.getElementById('titleInput').value.trim();
+    const author = document.getElementById('authorInput').value.trim() || '匿名';
+
+    await fetch('/diaries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomCode, content, title, author })
+    });
+    document.getElementById('diaryContent').value = '';
+    document.getElementById('titleInput').value = '';
+    // 无需手动刷新，socket 会自动更新
+  }
+
+  // 实时接收新日记
+  socket.on('diaryAdded', (diary) => {
+    // 把新日记插入到列表最前面
+    const list = document.getElementById('diaryList');
+    const folder = document.createElement('div');
+    folder.className = 'diary-folder';
+    folder.innerHTML = `
+      <div class="folder-header">
+        <span class="folder-title">📂 ${escapeHtml(diary.title) || '未命名日记'}</span>
+        <span class="folder-date">${new Date(diary.createdAt).toLocaleDateString('zh-CN', { year:'numeric', month:'short', day:'numeric' })}</span>
+      </div>
+      <div class="folder-content">
+        <div>${escapeHtml(diary.content)}</div>
+        <div class="folder-author">✍️ ${escapeHtml(diary.author)}</div>
+      </div>
+    `;
+    folder.addEventListener('click', () => folder.classList.toggle('open'));
+    list.prepend(folder);
+  });
+
+  function escapeHtml(text) {
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return text.replace(/[&<>"']/g, m => map[m]);
+  }
+</script>
+</body>
+</html>

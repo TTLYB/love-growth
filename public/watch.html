@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>一起看电影</title>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<style>
+
+body{
+
+    margin:0;
+    background:#0f172a;
+    color:white;
+
+    font-family:sans-serif;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+
+    padding:40px;
+}
+
+h1{
+
+    color:#ec4899;
+}
+
+.top{
+
+    display:flex;
+    gap:10px;
+
+    margin-bottom:20px;
+}
+
+input{
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:10px;
+
+    width:350px;
+}
+
+button{
+
+    padding:12px 18px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#ec4899;
+
+    color:white;
+
+    cursor:pointer;
+}
+
+video{
+
+    width:900px;
+
+    max-width:100%;
+
+    border-radius:20px;
+
+    margin-top:20px;
+
+    box-shadow:
+    0 0 40px rgba(236,72,153,.25);
+}
+
+.status{
+
+    margin-top:14px;
+
+    color:#94a3b8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+🎬 一起看电影
+</h1>
+
+<div class="top">
+
+<input
+id="videoUrl"
+placeholder="输入视频 mp4 链接">
+
+<button onclick="loadVideo()">
+加载视频
+</button>
+
+</div>
+
+<video
+id="video"
+controls>
+</video>
+
+<div class="status" id="status">
+等待同步...
+</div>
+
+<script>
+
+const socket = io();
+
+const room = "love-room";
+
+socket.emit(
+    "join-room",
+    room
+);
+
+const video =
+document.getElementById("video");
+
+const status =
+document.getElementById("status");
+
+let syncing = false;
+
+/* 加载视频 */
+
+function loadVideo(){
+
+    const url =
+    document.getElementById("videoUrl").value;
+
+    if(!url) return;
+
+    video.src = url;
+
+    socket.emit("video-action",{
+
+        room,
+        type:"load",
+        src:url
+
+    });
+
+}
+
+/* 播放同步 */
+
+video.addEventListener("play",()=>{
+
+    if(syncing) return;
+
+    socket.emit("video-action",{
+
+        room,
+        type:"play",
+        time:video.currentTime
+
+    });
+
+});
+
+/* 暂停同步 */
+
+video.addEventListener("pause",()=>{
+
+    if(syncing) return;
+
+    socket.emit("video-action",{
+
+        room,
+        type:"pause",
+        time:video.currentTime
+
+    });
+
+});
+
+/* 拖动同步 */
+
+video.addEventListener("seeked",()=>{
+
+    if(syncing) return;
+
+    socket.emit("video-action",{
+
+        room,
+        type:"seek",
+        time:video.currentTime
+
+    });
+
+});
+
+/* 接收同步 */
+
+socket.on("sync-video",(data)=>{
+
+    syncing = true;
+
+    if(data.type==="load"){
+
+        video.src = data.src;
+
+        status.innerText =
+        "对方加载了新视频";
+
+    }
+
+    if(data.type==="play"){
+
+        video.currentTime = data.time;
+
+        video.play();
+
+        status.innerText =
+        "对方开始播放";
+
+    }
+
+    if(data.type==="pause"){
+
+        video.currentTime = data.time;
+
+        video.pause();
+
+        status.innerText =
+        "对方暂停了视频";
+
+    }
+
+    if(data.type==="seek"){
+
+        video.currentTime = data.time;
+
+        status.innerText =
+        "同步播放进度";
+
+    }
+
+    setTimeout(()=>{
+
+        syncing = false;
+
+    },200);
+
+});
+
+</script>
+
+</body>
+</html>

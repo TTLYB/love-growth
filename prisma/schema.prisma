@@ -19,12 +19,12 @@ model Room {
 
 model Diary {
   id        String   @id @default(cuid())
+  title     String?
   content   String
   author    String
   createdAt DateTime @default(now())
-
-  roomId String
-  room   Room @relation(fields: [roomId], references: [id])
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id])
 }
 
 model Task {

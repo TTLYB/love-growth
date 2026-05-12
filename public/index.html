@@ -1,1184 +1,859 @@
-﻿<!DOCTYPE html>
+﻿```html
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>成长空间 · 双人宇宙</title>
-
-    <style>
-        :root {
-            --bg1: #07110b;
-            --bg2: #0f1f15;
-            --bg3: #0a1710;
-            --card: rgba(255,255,255,.07);
-            --card-strong: rgba(255,255,255,.10);
-            --line: rgba(255,255,255,.10);
-            --text: #f3fff6;
-            --muted: #9db4a4;
-            --primary: #8ff5b3;
-            --primary2: #5ad5ff;
-            --accent: #ffd36b;
-            --danger: #ff8181;
-            --shadow: 0 20px 60px rgba(0,0,0,.42);
-            --radius: 28px;
-            --radius-sm: 18px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0
-        }
-
-        html {
-            scroll-behavior: smooth
-        }
-
-        body {
-            min-height: 100vh;
-            font-family: "PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
-            color: var(--text);
-            background: radial-gradient(circle at top left, rgba(143,245,179,.15), transparent 28%), radial-gradient(circle at bottom right, rgba(90,213,255,.12), transparent 30%), linear-gradient(160deg,var(--bg1),var(--bg2) 55%,var(--bg3));
-            overflow-x: hidden;
-        }
-
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(90px);
-            opacity: .20;
-            z-index: -1;
-            animation: float 13s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        .orb1 {
-            width: 520px;
-            height: 520px;
-            background: #62ffae;
-            top: -180px;
-            left: -140px;
-        }
-
-        .orb2 {
-            width: 500px;
-            height: 500px;
-            background: #59d6ff;
-            right: -180px;
-            bottom: -180px;
-            animation-delay: -4s;
-        }
-
-        .orb3 {
-            width: 360px;
-            height: 360px;
-            background: #ffd36b;
-            top: 20%;
-            right: 20%;
-            opacity: .08;
-            animation-delay: -7s;
-        }
-
-        @keyframes float {
-            0%,100% {
-                transform: translateY(0) translateX(0) scale(1)
-            }
-
-            50% {
-                transform: translateY(26px) translateX(12px) scale(1.08)
-            }
-        }
-
-        .shell {
-            width: min(1200px, calc(100vw - 28px));
-            margin: 0 auto;
-            padding: 24px 0 36px;
-        }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 18px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo {
-            width: 52px;
-            height: 52px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, rgba(143,245,179,.22), rgba(90,213,255,.18));
-            border: 1px solid var(--line);
-            display: grid;
-            place-items: center;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(14px);
-            font-size: 1.35rem;
-        }
-
-        .brand h1 {
-            font-size: 1.2rem;
-            line-height: 1.1;
-            letter-spacing: .02em;
-        }
-
-        .brand p {
-            color: var(--muted);
-            font-size: .92rem;
-            margin-top: 3px;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-
-        .btn {
-            border: none;
-            cursor: pointer;
-            border-radius: 999px;
-            padding: 12px 16px;
-            font-weight: 700;
-            transition: .22s ease;
-            color: var(--text);
-            background: rgba(255,255,255,.06);
-            border: 1px solid var(--line);
-            backdrop-filter: blur(12px);
-        }
-
-            .btn:hover {
-                transform: translateY(-2px);
-                border-color: rgba(143,245,179,.28)
-            }
-
-        .btn-primary {
-            color: #04140b;
-            background: linear-gradient(135deg, var(--primary), var(--primary2));
-            border: none;
-            box-shadow: 0 14px 36px rgba(143,245,179,.18);
-        }
-
-        .btn-danger {
-            background: rgba(255,129,129,.11);
-            border: 1px solid rgba(255,129,129,.16);
-            color: #ffd2d2;
-        }
-
-        .btn-sm {
-            padding: 10px 14px;
-            font-size: .92rem
-        }
-
-        .hero {
-            display: grid;
-            grid-template-columns: 1.25fr .75fr;
-            gap: 18px;
-            margin: 10px 0 18px;
-        }
-
-        .panel {
-            background: var(--card);
-            border: 1px solid var(--line);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(16px);
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-
-        .hero-copy {
-            padding: 30px;
-            position: relative;
-        }
-
-            .hero-copy::after {
-                content: "";
-                position: absolute;
-                width: 220px;
-                height: 220px;
-                right: -60px;
-                top: -60px;
-                border-radius: 50%;
-                background: radial-gradient(circle, rgba(143,245,179,.16), transparent 70%);
-                pointer-events: none;
-            }
-
-        .eyebrow {
-            display: inline-flex;
-            gap: 8px;
-            align-items: center;
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(143,245,179,.10);
-            color: var(--primary);
-            font-weight: 800;
-            font-size: .9rem;
-            margin-bottom: 14px;
-        }
-
-        .hero-copy h2 {
-            font-size: clamp(2rem, 4vw, 3.8rem);
-            line-height: 1.05;
-            letter-spacing: -.04em;
-            margin-bottom: 14px;
-        }
-
-        .hero-copy p {
-            color: var(--muted);
-            line-height: 1.9;
-            font-size: 1rem;
-            max-width: 64ch;
-        }
-
-        .hero-foot {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .hero-side {
-            padding: 20px;
-            display: grid;
-            gap: 12px;
-            align-content: start;
-        }
-
-        .mini {
-            background: rgba(255,255,255,.05);
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            padding: 16px;
-        }
-
-            .mini label {
-                display: block;
-                color: var(--muted);
-                font-size: .88rem;
-                margin-bottom: 6px;
-            }
-
-            .mini strong {
-                font-size: 1.35rem;
-                letter-spacing: .01em;
-            }
-
-            .mini span {
-                display: block;
-                margin-top: 6px;
-                color: var(--muted);
-                font-size: .92rem;
-                line-height: 1.6;
-            }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1.08fr .92fr;
-            gap: 18px;
-        }
-
-        .section {
-            padding: 22px;
-            margin-bottom: 18px;
-        }
-
-        .section-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-            .section-head h3 {
-                font-size: 1.25rem;
-                margin-bottom: 6px;
-            }
-
-            .section-head p {
-                color: var(--muted);
-                line-height: 1.7;
-            }
-
-        .progress-panel {
-            padding: 22px;
-            display: grid;
-            gap: 18px;
-        }
-
-        .ring-wrap {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            flex-wrap: wrap;
-        }
-
-        .ring {
-            width: 172px;
-            height: 172px;
-            border-radius: 50%;
-            background: conic-gradient( from 180deg, var(--primary) 0%, var(--primary2) calc(var(--progress) * 1%), rgba(255,255,255,.08) 0 );
-            padding: 14px;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
-        }
-
-        .ring-inner {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: rgba(8,16,11,.72);
-            border: 1px solid rgba(255,255,255,.08);
-            display: grid;
-            place-items: center;
-            text-align: center;
-        }
-
-            .ring-inner strong {
-                font-size: 2rem;
-                line-height: 1;
-            }
-
-            .ring-inner span {
-                margin-top: 6px;
-                color: var(--muted);
-                font-size: .88rem;
-            }
-
-        .progress-info {
-            flex: 1;
-            min-width: 220px;
-            display: grid;
-            gap: 10px;
-        }
-
-        .bar {
-            width: 100%;
-            height: 12px;
-            border-radius: 999px;
-            background: rgba(255,255,255,.08);
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,.06);
-        }
-
-            .bar > i {
-                display: block;
-                height: 100%;
-                width: 0;
-                border-radius: inherit;
-                background: linear-gradient(90deg,var(--primary),var(--primary2));
-                transition: width .45s ease;
-            }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3,1fr);
-            gap: 10px;
-        }
-
-        .stat {
-            padding: 14px;
-            border-radius: 18px;
-            background: rgba(255,255,255,.05);
-            border: 1px solid var(--line);
-        }
-
-            .stat b {
-                display: block;
-                font-size: 1.25rem;
-                margin-bottom: 4px
-            }
-
-            .stat small {
-                color: var(--muted);
-                line-height: 1.4
-            }
-
-        .composer {
-            padding: 22px;
-        }
-
-        .input-row {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 12px;
-            margin-top: 14px;
-        }
-
-        .input {
-            width: 100%;
-            height: 58px;
-            border: none;
-            outline: none;
-            border-radius: 18px;
-            padding: 0 18px;
-            font-size: 16px;
-            color: var(--text);
-            background: rgba(255,255,255,.06);
-            border: 1px solid var(--line);
-            transition: .2s ease;
-        }
-
-            .input:focus {
-                border-color: rgba(143,245,179,.35);
-                box-shadow: 0 0 0 4px rgba(143,245,179,.07);
-            }
-
-        .chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 14px;
-        }
-
-        .chip {
-            padding: 10px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,.06);
-            border: 1px solid var(--line);
-            color: var(--muted);
-            cursor: pointer;
-            transition: .2s ease;
-            user-select: none;
-        }
-
-            .chip:hover {
-                color: var(--text);
-                border-color: rgba(143,245,179,.25);
-                transform: translateY(-2px);
-            }
-
-        .task-list {
-            display: grid;
-            gap: 12px;
-            margin-top: 18px;
-        }
-
-        .task {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
-            padding: 16px;
-            border-radius: 22px;
-            background: rgba(255,255,255,.05);
-            border: 1px solid var(--line);
-            position: relative;
-            overflow: hidden;
-            transition: .22s ease;
-            animation: pop .28s ease both;
-        }
-
-            .task:hover {
-                transform: translateY(-2px);
-                border-color: rgba(143,245,179,.22);
-            }
-
-            .task::after {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background: linear-gradient(120deg, transparent, rgba(255,255,255,.08), transparent);
-                transform: translateX(-100%);
-                transition: 1s ease;
-            }
-
-            .task:hover::after {
-                transform: translateX(100%)
-            }
-
-        .task-left {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-            min-width: 0;
-            flex: 1;
-        }
-
-        .check {
-            width: 22px;
-            height: 22px;
-            margin-top: 3px;
-            accent-color: var(--primary);
-            cursor: pointer;
-            flex: 0 0 auto;
-        }
-
-        .task-text {
-            min-width: 0;
-        }
-
-        .task-title {
-            font-size: 1.02rem;
-            line-height: 1.65;
-            word-break: break-word;
-        }
-
-        .task-meta {
-            color: var(--muted);
-            font-size: .86rem;
-            margin-top: 6px;
-        }
-
-        .done .task-title {
-            text-decoration: line-through;
-            opacity: .45;
-        }
-
-        .task-actions {
-            display: flex;
-            flex-shrink: 0;
-            gap: 10px;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 44px 20px;
-            border-radius: 24px;
-            border: 1px dashed rgba(255,255,255,.12);
-            background: rgba(255,255,255,.03);
-        }
-
-            .empty h4 {
-                font-size: 1.2rem;
-                margin-bottom: 8px;
-            }
-
-            .empty p {
-                color: var(--muted);
-                line-height: 1.8;
-            }
-
-        .foot {
-            margin: 18px 0 8px;
-            text-align: center;
-            color: var(--muted);
-            line-height: 1.9;
-            font-size: .96rem;
-        }
-
-        /* ===== 入场层 ===== */
-        .gate {
-            position: fixed;
-            inset: 0;
-            background: rgba(5,10,7,.60);
-            backdrop-filter: blur(18px);
-            display: grid;
-            place-items: center;
-            z-index: 999;
-            padding: 18px;
-        }
-
-        .gate-card {
-            width: min(92vw, 440px);
-            padding: 28px;
-            border-radius: 30px;
-            background: rgba(10,16,11,.84);
-            border: 1px solid rgba(255,255,255,.10);
-            box-shadow: var(--shadow);
-            animation: gateIn .65s cubic-bezier(.2,.8,.2,1);
-        }
-
-        @keyframes gateIn {
-            from {
-                opacity: 0;
-                transform: translateY(24px) scale(.96)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1)
-            }
-        }
-
-        .gate-badge {
-            display: inline-flex;
-            gap: 8px;
-            align-items: center;
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(143,245,179,.10);
-            color: var(--primary);
-            font-weight: 800;
-            font-size: .88rem;
-            margin-bottom: 16px;
-        }
-
-        .gate-card h2 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .gate-card p {
-            color: var(--muted);
-            line-height: 1.8;
-            margin-bottom: 16px;
-        }
-
-        .gate-form {
-            display: grid;
-            gap: 12px;
-        }
-
-        .gate-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .status-dot {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #7adf93;
-            box-shadow: 0 0 0 6px rgba(122,223,147,.12);
-        }
-
-            .dot.off {
-                background: #ff7f7f;
-                box-shadow: 0 0 0 6px rgba(255,127,127,.12)
-            }
-
-        .small-muted {
-            color: var(--muted);
-            font-size: .92rem
-        }
-
-        @keyframes pop {
-            from {
-                opacity: 0;
-                transform: translateY(10px) scale(.98)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1)
-            }
-        }
-
-        @media (max-width: 980px) {
-            .hero, .grid {
-                grid-template-columns: 1fr
-            }
-        }
-
-        @media (max-width: 700px) {
-            .shell {
-                width: min(100vw - 18px, 1200px)
-            }
-
-            .hero-copy, .composer, .progress-panel, .section {
-                padding: 18px
-            }
-
-            .topbar {
-                align-items: flex-start;
-                flex-direction: column
-            }
-
-            .actions {
-                justify-content: flex-start
-            }
-
-            .input-row {
-                grid-template-columns: 1fr
-            }
-
-            .stats {
-                grid-template-columns: 1fr
-            }
-
-            .ring {
-                width: 156px;
-                height: 156px
-            }
-
-            .task {
-                flex-direction: column
-            }
-
-            .task-actions {
-                width: 100%
-            }
-
-                .task-actions .btn {
-                    width: 100%
-                }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Our Space</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<style>
+
+:root{
+  --bg:#0f172a;
+  --panel:#1e293b;
+  --accent:#ec4899;
+  --accent2:#f472b6;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --line:rgba(255,255,255,.08);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:
+  Inter,
+  "PingFang SC",
+  "Microsoft YaHei",
+  sans-serif;
+
+  background:
+  radial-gradient(circle at top,
+  rgba(236,72,153,.16),
+  transparent 30%),
+
+  radial-gradient(circle at bottom right,
+  rgba(59,130,246,.12),
+  transparent 30%),
+
+  var(--bg);
+
+  color:var(--text);
+
+  min-height:100vh;
+  overflow:hidden;
+}
+
+/* 星空背景 */
+
+.stars{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:-1;
+}
+
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  opacity:.7;
+  animation:twinkle 3s infinite;
+}
+
+@keyframes twinkle{
+  0%{opacity:.2}
+  50%{opacity:1}
+  100%{opacity:.2}
+}
+
+/* 顶部 */
+
+.topbar{
+  width:100%;
+  height:80px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 40px;
+
+  border-bottom:1px solid var(--line);
+
+  backdrop-filter:blur(20px);
+}
+
+.logo{
+  font-size:24px;
+  font-weight:700;
+}
+
+.online{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  color:#4ade80;
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  background:#4ade80;
+  border-radius:50%;
+
+  box-shadow:0 0 10px #4ade80;
+}
+
+/* 主区域 */
+
+.main{
+  width:100%;
+  height:calc(100vh - 80px);
+
+  display:grid;
+  grid-template-columns:380px 1fr 340px;
+
+  gap:24px;
+
+  padding:24px;
+}
+
+/* 卡片 */
+
+.card{
+  background:rgba(30,41,59,.7);
+
+  border:1px solid var(--line);
+
+  border-radius:28px;
+
+  backdrop-filter:blur(18px);
+
+  box-shadow:
+  0 20px 60px rgba(0,0,0,.3);
+
+  overflow:hidden;
+}
+
+/* 聊天区 */
+
+.chat{
+  display:flex;
+  flex-direction:column;
+}
+
+.chat-header{
+  padding:22px;
+  border-bottom:1px solid var(--line);
+
+  font-size:18px;
+  font-weight:700;
+}
+
+.messages{
+  flex:1;
+  overflow-y:auto;
+
+  padding:20px;
+
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.msg{
+  padding:14px 16px;
+  border-radius:18px;
+  width:fit-content;
+  max-width:80%;
+  line-height:1.5;
+}
+
+.me{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  align-self:flex-end;
+}
+
+.ta{
+  background:rgba(255,255,255,.06);
+}
+
+.chat-input{
+  padding:18px;
+  border-top:1px solid var(--line);
+
+  display:flex;
+  gap:10px;
+}
+
+.input{
+  flex:1;
+  border:none;
+  outline:none;
+
+  background:rgba(15,23,42,.7);
+
+  color:white;
+
+  border-radius:16px;
+
+  padding:14px;
+}
+
+.send{
+  border:none;
+  padding:14px 22px;
+
+  border-radius:16px;
+
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+
+  color:white;
+
+  cursor:pointer;
+  font-weight:700;
+
+  transition:.2s;
+}
+
+.send:hover{
+  transform:translateY(-2px);
+}
+
+/* 中间 */
+
+.center{
+  padding:30px;
+
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+}
+
+.hero{
+  height:260px;
+
+  border-radius:26px;
+
+  position:relative;
+
+  overflow:hidden;
+
+  background:
+  linear-gradient(135deg,
+  rgba(236,72,153,.25),
+  rgba(59,130,246,.18));
+}
+
+.hero::before{
+  content:"";
+
+  position:absolute;
+  inset:0;
+
+  background:
+  radial-gradient(circle at center,
+  rgba(255,255,255,.12),
+  transparent 50%);
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+
+  height:100%;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+
+  padding:40px;
+}
+
+.big-title{
+  font-size:42px;
+  font-weight:800;
+
+  margin-bottom:14px;
+}
+
+.sub{
+  color:var(--muted);
+
+  font-size:18px;
+}
+
+.actions{
+  display:flex;
+  gap:16px;
+
+  margin-top:28px;
+}
+
+.btn{
+  border:none;
+  cursor:pointer;
+
+  border-radius:999px;
+
+  padding:14px 22px;
+
+  color:white;
+
+  font-weight:700;
+
+  transition:.2s;
+}
+
+.primary{
+  background:
+  linear-gradient(135deg,var(--accent),var(--accent2));
+}
+
+.secondary{
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--line);
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+}
+
+/* 功能区 */
+
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap:20px;
+}
+
+.feature{
+  padding:24px;
+  min-height:170px;
+
+  transition:.25s;
+  cursor:pointer;
+}
+
+.feature:hover{
+  transform:translateY(-4px);
+  border-color:rgba(236,72,153,.3);
+}
+
+.feature-title{
+  font-size:20px;
+  font-weight:700;
+
+  margin-bottom:12px;
+}
+
+.feature-desc{
+  color:var(--muted);
+  line-height:1.7;
+}
+
+/* 右侧 */
+
+.side{
+  padding:24px;
+
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.panel{
+  padding:22px;
+}
+
+.panel-title{
+  font-size:18px;
+  font-weight:700;
+
+  margin-bottom:16px;
+}
+
+.timeline{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.item{
+  border-left:2px solid rgba(236,72,153,.4);
+
+  padding-left:14px;
+}
+
+.date{
+  color:var(--accent);
+  font-size:14px;
+
+  margin-bottom:4px;
+}
+
+.music{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.play{
+  width:50px;
+  height:50px;
+
+  border-radius:50%;
+
+  border:none;
+
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+
+  color:white;
+
+  font-size:18px;
+
+  cursor:pointer;
+}
+
+/* toast */
+
+.toast{
+  position:fixed;
+  top:30px;
+  right:30px;
+
+  background:rgba(30,41,59,.95);
+
+  border:1px solid rgba(236,72,153,.3);
+
+  padding:16px 20px;
+
+  border-radius:18px;
+
+  transform:translateY(-100px);
+  opacity:0;
+
+  transition:.35s;
+
+  z-index:999;
+}
+
+.toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* 响应式 */
+
+@media(max-width:1200px){
+
+  .main{
+    grid-template-columns:1fr;
+    overflow:auto;
+  }
+
+  body{
+    overflow:auto;
+  }
+
+}
+
+</style>
 </head>
-
 <body>
-    <div class="bg-orb orb1"></div>
-    <div class="bg-orb orb2"></div>
-    <div class="bg-orb orb3"></div>
 
-    <div class="gate" id="gate">
-        <div class="gate-card">
-            <div class="gate-badge">🌱 双人共用空间</div>
-            <h2>进入你们的小站</h2>
-            <p>输入同一个房间码，就能进入同一个空间。<br>名字会显示在你们的记录里。</p>
+<div class="stars" id="stars"></div>
 
-            <form class="gate-form" id="gateForm">
-                <input class="input" id="roomCodeInput" placeholder="房间码，例如 love-room" />
-                <input class="input" id="displayNameInput" placeholder="你的名字，例如 我 / 她 / 他" />
-                <div class="gate-actions">
-                    <button class="btn btn-primary" type="submit">进入</button>
-                    <button class="btn" type="button" id="randomRoomBtn">生成房间码</button>
-                </div>
-                <div class="small-muted">后续会记住你上次输入的房间码和名字。</div>
-            </form>
-        </div>
+<div class="toast" id="toast">
+  对方正在想你 ❤️
+</div>
+
+<div class="topbar">
+
+  <div class="logo">
+    OUR SPACE
+  </div>
+
+  <div class="online">
+    <div class="dot"></div>
+    TA 在线中
+  </div>
+
+</div>
+
+<div class="main">
+
+  <!-- 左侧聊天 -->
+
+  <div class="card chat">
+
+    <div class="chat-header">
+      实时聊天
     </div>
 
-    <div class="shell">
-        <div class="topbar">
-            <div class="brand">
-                <div class="logo">✦</div>
-                <div>
-                    <h1>成长空间</h1>
-                    <p>双人共用 · 实时同步 · 记录生活</p>
-                </div>
-            </div>
+    <div class="messages" id="messages">
 
-            <div class="actions">
-                <button class="btn" id="themeBtn">🌙 夜间模式</button>
-                <button class="btn" id="copyRoomBtn">复制房间码</button>
-            </div>
-        </div>
+      <div class="msg ta">
+        今天也要开心一点。
+      </div>
 
-        <section class="hero">
-            <div class="panel hero-copy">
-                <div class="eyebrow">✨ Every day deserves art</div>
-                <h2>把普通日子，<br>做成值得反复回看的作品。</h2>
-                <p>
-                    这里不是单纯的待办清单，而是你们一起生活的可视化空间。
-                    任务、陪伴、进度、共同目标都能在这里被认真收藏。
-                </p>
-                <div class="hero-foot">
-                    <button class="btn btn-primary" id="scrollToTasks">开始记录</button>
-                    <button class="btn" id="quickAddBtn">一键加入今日重点</button>
-                </div>
-            </div>
+      <div class="msg me">
+        那你陪我。
+      </div>
 
-            <div class="panel hero-side">
-                <div class="mini">
-                    <label>当前房间</label>
-                    <strong id="roomLabel">未进入</strong>
-                    <span id="nameLabel">请先输入房间码与名字</span>
-                </div>
-                <div class="mini">
-                    <label>连接状态</label>
-                    <strong class="status-dot">
-                        <i class="dot off" id="statusDot"></i>
-                        <span id="statusText">未连接</span>
-                    </strong>
-                    <span>两个设备在同一房间时，会实时看到彼此的更新。</span>
-                </div>
-                <div class="mini">
-                    <label>今日提示</label>
-                    <strong id="tipTitle">先完成最重要的一件事</strong>
-                    <span id="tipText">把目标变小，事情就会变得更容易开始。</span>
-                </div>
-            </div>
-        </section>
-
-        <div class="grid">
-            <section class="panel progress-panel">
-                <div class="section-head">
-                    <div>
-                        <h3>今日进度</h3>
-                        <p>一个清晰的完成度，会让你们更有节奏感。</p>
-                    </div>
-                </div>
-
-                <div class="ring-wrap">
-                    <div class="ring" id="progressRing" style="--progress:0">
-                        <div class="ring-inner">
-                            <div>
-                                <strong id="progressText">0%</strong>
-                                <span>完成率</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="progress-info">
-                        <div class="bar"><i id="progressBar"></i></div>
-                        <div class="stats">
-                            <div class="stat">
-                                <b id="totalCount">0</b>
-                                <small>总任务</small>
-                            </div>
-                            <div class="stat">
-                                <b id="doneCount">0</b>
-                                <small>已完成</small>
-                            </div>
-                            <div class="stat">
-                                <b id="leftCount">0</b>
-                                <small>未完成</small>
-                            </div>
-                        </div>
-                        <div class="small-muted" id="statusHint">今天的节奏还不错，继续推进一点。</div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="panel composer" id="taskSection">
-                <div class="section-head">
-                    <div>
-                        <h3>任务清单</h3>
-                        <p>把今天要做的事记下来，互相看见，也互相提醒。</p>
-                    </div>
-                </div>
-
-                <div class="input-row">
-                    <input id="taskInput" class="input" placeholder="输入一条任务，例如：阅读30分钟 / 运动20分钟" />
-                    <button id="addBtn" class="btn btn-primary">添加任务</button>
-                </div>
-
-                <div class="chips">
-                    <div class="chip" data-text="阅读 30 分钟">📚 阅读</div>
-                    <div class="chip" data-text="运动 20 分钟">🏃 运动</div>
-                    <div class="chip" data-text="写今日总结">📝 总结</div>
-                    <div class="chip" data-text="给对方发一句鼓励">💌 鼓励</div>
-                    <div class="chip" data-text="早点睡觉">🌙 休息</div>
-                </div>
-
-                <div id="taskList" class="task-list"></div>
-            </section>
-        </div>
-
-        <div class="foot">
-            <div id="footerQuote">把每一天都认真存起来。</div>
-            <div>两个人一起走，路会更亮。</div>
-        </div>
     </div>
 
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script>
-        const STORAGE_KEYS = {
-            roomCode: "cg_room_code",
-            name: "cg_display_name",
-            theme: "cg_theme"
-        };
+    <div class="chat-input">
 
-        let socket = null;
-        let currentRoomCode = localStorage.getItem(STORAGE_KEYS.roomCode) || "";
-        let displayName = localStorage.getItem(STORAGE_KEYS.name) || "";
-        let tasks = [];
-        let joined = false;
+      <input
+      id="messageInput"
+      class="input"
+      placeholder="输入想说的话...">
 
-        const $ = (sel) => document.querySelector(sel);
+      <button
+      class="send"
+      onclick="sendMessage()">
+      发送
+      </button>
 
-        const tips = [
-            ["先完成最重要的一件事", "把目标变小，事情就会变得更容易开始。"],
-            ["今天也别忘了休息", "节奏不是越快越好，而是持续地往前。"],
-            ["一起做一点点", "微小的积累会慢慢变成很大的变化。"],
-            ["把想法写下来", "记录本身就会让生活更清晰。"]
-        ];
+    </div>
 
-        function uid() {
-            return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-        }
+  </div>
 
-        function setTheme(theme) {
-            localStorage.setItem(STORAGE_KEYS.theme, theme);
-            document.documentElement.dataset.theme = theme;
-            $("#themeBtn").textContent = theme === "dark" ? "☀️ 日间模式" : "🌙 夜间模式";
-        }
+  <!-- 中间 -->
 
-        function applyTheme() {
-            const theme = localStorage.getItem(STORAGE_KEYS.theme) || "dark";
-            setTheme(theme);
-        }
+  <div class="center">
 
-        function setStatus(online) {
-            $("#statusDot").className = online ? "dot" : "dot off";
-            $("#statusText").textContent = online ? "已连接" : "未连接";
-        }
+    <div class="hero card">
 
-        function setRoomInfo() {
-            $("#roomLabel").textContent = currentRoomCode || "未进入";
-            $("#nameLabel").textContent = displayName ? `当前昵称：${displayName}` : "请先输入房间码与名字";
-        }
+      <div class="hero-content">
 
-        function updateTip() {
-            const item = tips[Math.floor(Math.random() * tips.length)];
-            $("#tipTitle").textContent = item[0];
-            $("#tipText").textContent = item[1];
-            $("#footerQuote").textContent = item[1];
-        }
+        <div class="big-title">
+          欢迎回家
+        </div>
 
-        function calcProgress(list) {
-            const total = list.length;
-            const done = list.filter(t => t.done).length;
-            const left = total - done;
-            const percent = total ? Math.round((done / total) * 100) : 0;
-            return { total, done, left, percent };
-        }
+        <div class="sub">
+          今天是我们一起度过的第 327 天
+        </div>
 
-        function renderStats() {
-            const { total, done, left, percent } = calcProgress(tasks);
-            $("#totalCount").textContent = total;
-            $("#doneCount").textContent = done;
-            $("#leftCount").textContent = left;
-            $("#progressText").textContent = `${percent}%`;
-            $("#progressBar").style.width = `${percent}%`;
-            $("#progressRing").style.setProperty("--progress", percent);
+        <div class="actions">
 
-            if (!total) {
-                $("#statusHint").textContent = "还没有任务，先添加第一条吧。";
-            } else if (percent === 100) {
-                $("#statusHint").textContent = "今天已经全部完成，适合给彼此一个小小的奖励。";
-            } else if (percent >= 60) {
-                $("#statusHint").textContent = "已经走过大半，继续稳稳推进。";
-            } else {
-                $("#statusHint").textContent = "先做一件最重要的，节奏就会起来。";
-            }
-        }
+          <button
+          class="btn primary"
+          onclick="showToast()">
+          我想你了
+          </button>
 
-        function taskNode(task) {
-            const item = document.createElement("div");
-            item.className = `task ${task.done ? "done" : ""}`;
-            item.dataset.id = task.id;
+          <button
+          class="btn secondary"
+          onclick="goTimeline()">
+          查看回忆
+          </button>
 
-            const left = document.createElement("div");
-            left.className = "task-left";
+        </div>
 
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.className = "check";
-            checkbox.checked = !!task.done;
-            checkbox.addEventListener("change", () => toggleTask(task.id));
+      </div>
 
-            const textWrap = document.createElement("div");
-            textWrap.className = "task-text";
+    </div>
 
-            const title = document.createElement("div");
-            title.className = "task-title";
-            title.textContent = task.text;
+    <div class="grid">
 
-            const meta = document.createElement("div");
-            meta.className = "task-meta";
-            meta.textContent = task.createdAt ? `创建于 ${new Date(task.createdAt).toLocaleString("zh-CN")}` : "刚刚创建";
+      <div class="feature card"
+      onclick="openWatch()">
 
-            textWrap.appendChild(title);
-            textWrap.appendChild(meta);
+        <div class="feature-title">
+          🎬 一起看电影
+        </div>
 
-            left.appendChild(checkbox);
-            left.appendChild(textWrap);
+        <div class="feature-desc">
+          同步播放、暂停、进度，
+          两个人像坐在一起一样。
+        </div>
 
-            const actions = document.createElement("div");
-            actions.className = "task-actions";
+      </div>
 
-            const del = document.createElement("button");
-            del.className = "btn btn-danger btn-sm";
-            del.textContent = "删除";
-            del.addEventListener("click", () => deleteTask(task.id));
+      <div class="feature card"
+      onclick="dailyTask()">
 
-            actions.appendChild(del);
+        <div class="feature-title">
+          💌 今日情侣任务
+        </div>
 
-            item.appendChild(left);
-            item.appendChild(actions);
+        <div class="feature-desc">
+          完成互动任务，
+          提升今日亲密度。
+        </div>
 
-            return item;
-        }
+      </div>
 
-        function renderTasks(list) {
-            tasks = Array.isArray(list) ? list : [];
-            const root = $("#taskList");
-            root.innerHTML = "";
+      <div class="feature card"
+      onclick="musicSync()">
 
-            if (!tasks.length) {
-                root.innerHTML = `
-            <div class="empty">
-              <h4>🌙 还没有任务</h4>
-              <p>添加第一条任务，页面就会开始“活”起来。<br>你们的成长空间从这里正式开始。</p>
-            </div>
-          `;
-                renderStats();
-                return;
-            }
+        <div class="feature-title">
+          🎵 音乐共享
+        </div>
 
-            tasks.forEach(t => root.appendChild(taskNode(t)));
-            renderStats();
-        }
+        <div class="feature-desc">
+          你播放的音乐，
+          TA 也会同步看到。
+        </div>
 
-        function joinRoom() {
-            if (!socket || !currentRoomCode) return;
-            socket.emit("joinRoom", currentRoomCode);
-            joined = true;
-            setRoomInfo();
-        }
+      </div>
 
-        function connectSocket() {
-            if (socket) socket.disconnect();
-            socket = io("http://localhost:3000", { transports: ["websocket", "polling"] });
+      <div class="feature card"
+      onclick="memoryWall()">
 
-            socket.on("connect", () => {
-                setStatus(true);
-                joinRoom();
-            });
+        <div class="feature-title">
+          📸 回忆墙
+        </div>
 
-            socket.on("disconnect", () => {
-                setStatus(false);
-            });
+        <div class="feature-desc">
+          上传属于你们的照片、
+          故事和瞬间。
+        </div>
 
-            socket.on("initTasks", (list) => {
-                renderTasks(list);
-            });
+      </div>
 
-            socket.on("taskAdded", (task) => {
-                const exists = tasks.some(t => t.id === task.id);
-                if (!exists) {
-                    tasks.push(task);
-                    renderTasks(tasks);
-                }
-            });
+      <div class="feature card" onclick="openGame()">
+        <div class="feature-title">🎮 默契问答</div>
+        <div class="feature-desc">测测你们有多了解对方。</div>
+      </div>
 
-            socket.on("syncTasks", (list) => {
-                renderTasks(list);
-            });
-        }
+      <div class="feature card" onclick="sleepMode()">
+        <div class="feature-title">🌙 晚安模式</div>
+        <div class="feature-desc">一起听着音乐入睡。</div>
+      </div>
 
-        function saveIdentity() {
-            localStorage.setItem(STORAGE_KEYS.roomCode, currentRoomCode);
-            localStorage.setItem(STORAGE_KEYS.name, displayName);
-        }
+      <div class="feature card" onclick="enterSpace()">
+        <div class="feature-title">✨ 宇宙房间</div>
+        <div class="feature-desc">进入只属于你们的星空。</div>
+      </div>
+      <div class="feature card" onclick="openDiary()">
+        <div class="feature-title">💌 共享日记</div>
+        <div class="feature-desc">一起写下今天的小心情。</div>
+      </div>
+    </div>
 
-        function openGate() {
-            $("#gate").style.display = "grid";
-        }
+  </div>
 
-        function closeGate() {
-            $("#gate").style.display = "none";
-        }
+  <!-- 右侧 -->
 
-        function submitGate(e) {
-            e.preventDefault();
-            const room = $("#roomCodeInput").value.trim();
-            const name = $("#displayNameInput").value.trim();
+  <div class="side">
 
-            if (!room) {
-                alert("先输入房间码");
-                return;
-            }
+    <div class="panel card">
 
-            currentRoomCode = room;
-            displayName = name || "Ta";
-            saveIdentity();
-            setRoomInfo();
-            closeGate();
-            connectSocket();
-        }
+      <div class="panel-title">
+        回忆时间轴
+      </div>
 
-        function addTask(text) {
-            const value = String(text || $("#taskInput").value || "").trim();
-            if (!value || !currentRoomCode) return;
+      <div class="timeline">
 
-            socket.emit("addTask", {
-                roomCode: currentRoomCode,
-                text: value
-            });
+        <div class="item">
+          <div class="date">
+            2026.05.01
+          </div>
+          <div>
+            第一次一起做网站
+          </div>
+        </div>
 
-            $("#taskInput").value = "";
-            $("#taskInput").focus();
-        }
+        <div class="item">
+          <div class="date">
+            2026.05.12
+          </div>
+          <div>
+            星空房间上线
+          </div>
+        </div>
 
-        function toggleTask(id) {
-            if (!currentRoomCode) return;
-            socket.emit("toggleTask", { roomCode: currentRoomCode, id });
-        }
+      </div>
 
-        function deleteTask(id) {
-            if (!currentRoomCode) return;
-            socket.emit("deleteTask", { roomCode: currentRoomCode, id });
-        }
+    </div>
 
-        function initUI() {
-            applyTheme();
-            updateTip();
-            setRoomInfo();
+    <div class="panel card">
 
-            $("#themeBtn").addEventListener("click", () => {
-                const next = (localStorage.getItem(STORAGE_KEYS.theme) || "dark") === "dark" ? "light" : "dark";
-                setTheme(next);
-            });
+      <div class="panel-title">
+        正在播放
+      </div>
 
-            $("#addBtn").addEventListener("click", () => addTask());
-            $("#taskInput").addEventListener("keydown", (e) => {
-                if (e.key === "Enter") addTask();
-            });
+      <div class="music">
 
-            $("#scrollToTasks").addEventListener("click", () => {
-                $("#taskSection").scrollIntoView({ behavior: "smooth", block: "start" });
-            });
+        <div>
+          <div>晴天</div>
+          <div style="color:var(--muted)">
+            周杰伦
+          </div>
+        </div>
 
-            $("#quickAddBtn").addEventListener("click", () => {
-                const quick = ["阅读 30 分钟", "运动 20 分钟", "写今日总结"];
-                addTask(quick[Math.floor(Math.random() * quick.length)]);
-            });
+        <button
+        class="play"
+        onclick="toggleMusic()">
+        ▶
+        </button>
 
-            $("#copyRoomBtn").addEventListener("click", async () => {
-                if (!currentRoomCode) return alert("还没有房间码");
-                try {
-                    await navigator.clipboard.writeText(currentRoomCode);
-                    $("#copyRoomBtn").textContent = "已复制";
-                    setTimeout(() => $("#copyRoomBtn").textContent = "复制房间码", 1200);
-                } catch {
-                    prompt("复制失败，手动复制这个房间码：", currentRoomCode);
-                }
-            });
+      </div>
 
-            $("#randomRoomBtn").addEventListener("click", () => {
-                const code = "room-" + Math.random().toString(36).slice(2, 8);
-                $("#roomCodeInput").value = code;
-            });
+    </div>
 
-            $("#gateForm").addEventListener("submit", submitGate);
+    <div class="panel card">
 
-            document.querySelectorAll(".chip").forEach(el => {
-                el.addEventListener("click", () => addTask(el.dataset.text));
-            });
+      <div class="panel-title">
+        今日亲密度
+      </div>
 
-            if (currentRoomCode && displayName) {
-                $("#roomCodeInput").value = currentRoomCode;
-                $("#displayNameInput").value = displayName;
-                closeGate();
-                connectSocket();
-            } else {
-                openGate();
-                $("#roomCodeInput").value = currentRoomCode;
-                $("#displayNameInput").value = displayName;
-                $("#roomCodeInput").focus();
-                setStatus(false);
-            }
+      <div style="
+      font-size:42px;
+      font-weight:800;
+      color:var(--accent)">
+        92
+      </div>
 
-            renderStats();
-            setTimeout(() => {
-                document.querySelectorAll(".panel, .hero").forEach(el => {
-                    el.animate(
-                        [{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1, transform: "translateY(0)" }],
-                        { duration: 520, easing: "ease-out" }
-                    );
-                });
-            }, 60);
-        }
+    </div>
 
-        initUI();
-    </script>
+  </div>
+
+</div>
+
+<script>
+// ========== Socket.IO 连接 ==========
+const socket = io();  // 自动连接当前域（线上/本地均适用）
+
+// 当前房间码
+let roomCode = '';
+
+// DOM 元素
+const messagesEl = document.getElementById('messages');
+const messageInput = document.getElementById('messageInput');
+const toast = document.getElementById('toast');
+
+// ========== 星空背景生成（保留） ==========
+const stars = document.getElementById('stars');
+for (let i = 0; i < 120; i++) {
+  const star = document.createElement('div');
+  star.className = 'star';
+  star.style.left = Math.random() * 100 + '%';
+  star.style.top = Math.random() * 100 + '%';
+  star.style.animationDelay = Math.random() * 3 + 's';
+  stars.appendChild(star);
+}
+
+// ========== Toast 提示（保留） ==========
+function showToast() {
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ========== 房间管理 ==========
+async function createRoom() {
+  try {
+    const res = await fetch('/create-room');
+    const data = await res.json();
+    joinRoom(data.roomCode);
+  } catch (e) {
+    alert('创建房间失败');
+  }
+}
+
+function joinRoom(code) {
+  if (!code) return;
+  roomCode = code;
+  socket.emit('joinRoom', code);
+}
+
+// 页面加载时可自动创建一个房间（也可手动调用）
+// createRoom();
+
+// ========== 实时聊天 ==========
+function appendMessage(text, sender, isMe) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `msg ${isMe ? 'me' : 'ta'}`;
+  msgDiv.textContent = text;
+  messagesEl.appendChild(msgDiv);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function sendMessage() {
+  const text = messageInput.value.trim();
+  if (!text) return;
+  if (!roomCode) {
+    alert('请先创建或加入房间');
+    return;
+  }
+  socket.emit('sendMessage', {
+    roomCode,
+    sender: '我',
+    message: text
+  });
+  // 乐观显示自己的消息
+  appendMessage(text, '我', true);
+  messageInput.value = '';
+}
+
+// 接收消息
+socket.on('newMessage', (msg) => {
+  if (msg.sender === '我') return; // 跳过自己发的
+  appendMessage(msg.message, msg.sender, false);
+});
+
+// 回车发送
+messageInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+// ========== 页面跳转函数（已修正为真实跳转） ==========
+function openWatch() {
+  window.location.href = 'watch.html';
+}
+
+function dailyTask() {
+  window.location.href = 'task.html';
+}
+
+function musicSync() {
+  // 如果 music.html 存在可跳转，否则保留提示
+  window.location.href = 'music.html';  // 或 'music.html'
+}
+
+function memoryWall() {
+  window.location.href = 'memory.html';
+}
+
+function goTimeline() {
+  window.location.href = 'timeline.html';
+}
+
+function toggleMusic() {
+  alert('音乐播放功能开发中…');
+}
+
+function openGame() {
+  window.location.href = 'game.html';
+}
+
+function sleepMode() {
+  window.location.href = 'sleep.html';
+}
+
+function enterSpace() {
+  window.location.href = 'space.html';
+}
+function openDiary() {
+  window.location.href = 'diary.html';
+}
+</script>
+
 </body>
 </html>
+```

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>回忆时间轴</title>
+
+<style>
+
+:root{
+  --bg:#0f172a;
+  --panel:#1e293b;
+  --accent:#ec4899;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --line:rgba(255,255,255,.08);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:
+  radial-gradient(circle at top,
+  rgba(236,72,153,.15),
+  transparent 30%),
+  var(--bg);
+
+  font-family:
+  Inter,
+  "PingFang SC",
+  sans-serif;
+
+  color:var(--text);
+
+  min-height:100vh;
+
+  padding:40px;
+}
+
+.topbar{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:40px;
+}
+
+.logo{
+  font-size:32px;
+  font-weight:800;
+}
+
+.back{
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--line);
+
+  padding:12px 18px;
+
+  border-radius:14px;
+
+  cursor:pointer;
+  color:white;
+}
+
+.container{
+  max-width:1000px;
+  margin:auto;
+}
+
+.add-box{
+
+  background:rgba(30,41,59,.7);
+
+  border:1px solid var(--line);
+
+  border-radius:24px;
+
+  padding:24px;
+
+  margin-bottom:40px;
+}
+
+.input,
+.textarea{
+
+  width:100%;
+
+  background:#0f172a;
+
+  border:1px solid var(--line);
+
+  color:white;
+
+  border-radius:16px;
+
+  padding:14px;
+
+  margin-top:14px;
+
+  outline:none;
+}
+
+.textarea{
+  min-height:120px;
+  resize:none;
+}
+
+.add-btn{
+
+  margin-top:18px;
+
+  border:none;
+
+  padding:14px 22px;
+
+  border-radius:14px;
+
+  background:linear-gradient(
+  135deg,
+  #ec4899,
+  #f472b6
+  );
+
+  color:white;
+
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+.timeline{
+  position:relative;
+
+  padding-left:40px;
+}
+
+.timeline::before{
+
+  content:"";
+
+  position:absolute;
+
+  left:8px;
+  top:0;
+  bottom:0;
+
+  width:3px;
+
+  background:
+  linear-gradient(
+  #ec4899,
+  transparent
+  );
+}
+
+.memory{
+
+  position:relative;
+
+  background:rgba(30,41,59,.7);
+
+  border:1px solid var(--line);
+
+  border-radius:24px;
+
+  padding:24px;
+
+  margin-bottom:28px;
+}
+
+.memory::before{
+
+  content:"";
+
+  position:absolute;
+
+  left:-39px;
+  top:28px;
+
+  width:18px;
+  height:18px;
+
+  border-radius:50%;
+
+  background:#ec4899;
+
+  box-shadow:
+  0 0 20px rgba(236,72,153,.6);
+}
+
+.date{
+
+  color:#ec4899;
+
+  margin-bottom:10px;
+
+  font-weight:700;
+}
+
+.title{
+
+  font-size:22px;
+
+  font-weight:700;
+
+  margin-bottom:12px;
+}
+
+.desc{
+
+  line-height:1.8;
+
+  color:var(--muted);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="topbar">
+
+    <div class="logo">
+      回忆时间轴
+    </div>
+
+    <button
+    class="back"
+    onclick="location.href='index.html'">
+      返回主页
+    </button>
+
+  </div>
+
+  <div class="add-box">
+
+    <h2>新增回忆</h2>
+
+    <input
+    class="input"
+    placeholder="回忆标题">
+
+    <textarea
+    class="textarea"
+    placeholder="写下今天发生的故事..."></textarea>
+
+    <button class="add-btn">
+      保存回忆
+    </button>
+
+  </div>
+
+  <div class="timeline">
+
+    <div class="memory">
+
+      <div class="date">
+        2026.05.01
+      </div>
+
+      <div class="title">
+        第一次一起做网站
+      </div>
+
+      <div class="desc">
+        从一个简陋的页面开始，
+        慢慢变成属于我们的宇宙。
+      </div>
+
+    </div>
+
+    <div class="memory">
+
+      <div class="date">
+        2026.05.12
+      </div>
+
+      <div class="title">
+        星空房间上线
+      </div>
+
+      <div class="desc">
+        第一次实现实时同步聊天。
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

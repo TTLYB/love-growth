@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>情侣任务</title>
+
+<style>
+
+:root{
+  --bg:#0f172a;
+  --panel:#1e293b;
+  --accent:#ec4899;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --line:rgba(255,255,255,.08);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+
+  background:
+  radial-gradient(circle at top,
+  rgba(236,72,153,.15),
+  transparent 30%),
+  var(--bg);
+
+  color:white;
+
+  font-family:
+  Inter,
+  "PingFang SC",
+  sans-serif;
+
+  min-height:100vh;
+
+  padding:40px;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+}
+
+.topbar{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:40px;
+}
+
+.logo{
+
+  font-size:32px;
+  font-weight:800;
+}
+
+.back{
+
+  border:none;
+
+  padding:12px 18px;
+
+  border-radius:14px;
+
+  background:rgba(255,255,255,.06);
+
+  color:white;
+
+  cursor:pointer;
+}
+
+.level{
+
+  background:
+  linear-gradient(
+  135deg,
+  rgba(236,72,153,.18),
+  rgba(59,130,246,.12)
+  );
+
+  border:1px solid var(--line);
+
+  border-radius:28px;
+
+  padding:30px;
+
+  margin-bottom:30px;
+}
+
+.level-title{
+  font-size:20px;
+  color:var(--muted);
+}
+
+.score{
+
+  margin-top:10px;
+
+  font-size:64px;
+  font-weight:800;
+
+  color:#ec4899;
+}
+
+.grid{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(auto-fit,minmax(300px,1fr));
+
+  gap:24px;
+}
+
+.task{
+
+  background:rgba(30,41,59,.7);
+
+  border:1px solid var(--line);
+
+  border-radius:24px;
+
+  padding:24px;
+
+  transition:.2s;
+}
+
+.task:hover{
+  transform:translateY(-4px);
+}
+
+.task-title{
+
+  font-size:22px;
+  font-weight:700;
+
+  margin-bottom:12px;
+}
+
+.task-desc{
+
+  color:var(--muted);
+
+  line-height:1.8;
+
+  margin-bottom:20px;
+}
+
+.done{
+
+  width:100%;
+
+  border:none;
+
+  padding:14px;
+
+  border-radius:14px;
+
+  background:
+  linear-gradient(
+  135deg,
+  #ec4899,
+  #f472b6
+  );
+
+  color:white;
+
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="topbar">
+
+    <div class="logo">
+      今日情侣任务
+    </div>
+
+    <button
+    class="back"
+    onclick="location.href='index.html'">
+      返回主页
+    </button>
+
+  </div>
+
+  <div class="level">
+
+    <div class="level-title">
+      今日亲密度
+    </div>
+
+    <div class="score">
+      92
+    </div>
+
+  </div>
+
+  <div class="grid">
+
+    <div class="task">
+
+      <div class="task-title">
+        🎵 一起听歌
+      </div>
+
+      <div class="task-desc">
+        找一首今天最想分享给TA的歌。
+      </div>
+
+      <button class="done">
+        完成任务 +10
+      </button>
+
+    </div>
+
+    <div class="task">
+
+      <div class="task-title">
+        💌 夸奖对方
+      </div>
+
+      <div class="task-desc">
+        今天认真夸对方三句。
+      </div>
+
+      <button class="done">
+        完成任务 +15
+      </button>
+
+    </div>
+
+    <div class="task">
+
+      <div class="task-title">
+        📸 分享自拍
+      </div>
+
+      <div class="task-desc">
+        发送一张今天的照片。
+      </div>
+
+      <button class="done">
+        完成任务 +8
+      </button>
+
+    </div>
+
+    <div class="task">
+
+      <div class="task-title">
+        🎬 一起看电影
+      </div>
+
+      <div class="task-desc">
+        进入同步观影房间。
+      </div>
+
+      <button
+      class="done"
+      onclick="location.href='watch.html'">
+        进入房间
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

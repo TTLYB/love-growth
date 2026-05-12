@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>回忆墙</title>
+
+<style>
+
+:root{
+  --bg:#0f172a;
+  --panel:#1e293b;
+  --accent:#ec4899;
+  --text:#f8fafc;
+  --line:rgba(255,255,255,.08);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+
+  background:
+  radial-gradient(circle at top,
+  rgba(236,72,153,.15),
+  transparent 30%),
+  var(--bg);
+
+  color:white;
+
+  font-family:
+  Inter,
+  "PingFang SC",
+  sans-serif;
+
+  min-height:100vh;
+
+  padding:40px;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+}
+
+.topbar{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:40px;
+}
+
+.logo{
+
+  font-size:32px;
+  font-weight:800;
+}
+
+.back{
+
+  padding:12px 18px;
+
+  border:none;
+
+  border-radius:14px;
+
+  background:rgba(255,255,255,.06);
+
+  color:white;
+
+  cursor:pointer;
+}
+
+.grid{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(auto-fit,minmax(280px,1fr));
+
+  gap:24px;
+}
+
+.photo{
+
+  background:rgba(30,41,59,.7);
+
+  border:1px solid var(--line);
+
+  border-radius:24px;
+
+  overflow:hidden;
+
+  transition:.2s;
+}
+
+.photo:hover{
+  transform:translateY(-6px);
+}
+
+.photo img{
+
+  width:100%;
+  height:260px;
+
+  object-fit:cover;
+}
+
+.content{
+  padding:20px;
+}
+
+.title{
+
+  font-size:20px;
+  font-weight:700;
+
+  margin-bottom:10px;
+}
+
+.desc{
+
+  color:#94a3b8;
+
+  line-height:1.7;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="topbar">
+
+    <div class="logo">
+      回忆墙
+    </div>
+
+    <button
+    class="back"
+    onclick="location.href='index.html'">
+      返回主页
+    </button>
+
+  </div>
+
+  <div class="grid">
+
+    <div class="photo">
+
+      <img src="https://picsum.photos/500/600?1">
+
+      <div class="content">
+
+        <div class="title">
+          第一次约会
+        </div>
+
+        <div class="desc">
+          那天天气很好，
+          风也很温柔。
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="photo">
+
+      <img src="https://picsum.photos/500/600?2">
+
+      <div class="content">
+
+        <div class="title">
+          一起散步
+        </div>
+
+        <div class="desc">
+          晚上的灯光特别好看。
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="photo">
+
+      <img src="https://picsum.photos/500/600?3">
+
+      <div class="content">
+
+        <div class="title">
+          星空夜晚
+        </div>
+
+        <div class="desc">
+          属于我们的宇宙。
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
