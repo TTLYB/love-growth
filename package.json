@@ -6,7 +6,7 @@
     "node": ">=24.0.0"
   },
 "scripts": {
-  "start": "npx prisma migrate deploy && node server.js",
+  "start": "node server.js",
   "dev": "nodemon server.js"
 },
   "keywords": [],
