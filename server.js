@@ -72,6 +72,6 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`服务器启动：http://localhost:${PORT}`);
 });
