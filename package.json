@@ -1,13 +1,10 @@
-
 {
   "name": "love-growth-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
   "type": "module",
   "engines": {
-  "node": ">=24.0.0"
-  }，
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "postinstall": "npx prisma generate"
     "start": "node server.js",
