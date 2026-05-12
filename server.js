@@ -130,7 +130,7 @@ io.on("connection", (socket) => {
 
   try {
     const { execSync } = await import('child_process');
-    execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+    execSync('npx prisma db push', { stdio: 'inherit' });
     console.log('✅ 数据库迁移成功');
   } catch (err) {
     console.error('❌ 数据库迁移失败:', err.message);
