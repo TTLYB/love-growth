@@ -4,12 +4,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import pkg from '@prisma/client';
 const { PrismaClient } = pkg;
-import adapterPkg from '@prisma/adapter-pg';
-const { PrismaPg } = adapterPkg;
+import { PrismaPg } from '@prisma/adapter-pg';
 import { Server } from "socket.io";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-
 dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -28,17 +26,14 @@ const io = new Server(server, {
 
 app.use(cors());
 app.use(express.json());
-// 提供 public 目录下的静态文件（你的 index.html 放这里）
 app.use(express.static(join(__dirname, 'public')));
 
-// GET 路由（方便浏览器直接获取房间码）
 app.get("/create-room", async (req, res) => {
   const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
   const room = await prisma.room.create({ data: { roomCode } });
   res.json(room);
 });
 
-// 原有的 POST 路由保留
 app.post("/create-room", async (req, res) => {
   const roomCode = Math.random().toString(36).substring(2, 8);
   const room = await prisma.room.create({ data: { roomCode } });
@@ -75,6 +70,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("服务器启动：http://localhost:3000");
+// 修正端口
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`服务器启动：http://localhost:${PORT}`);
 });
